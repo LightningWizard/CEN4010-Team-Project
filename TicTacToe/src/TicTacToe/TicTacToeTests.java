@@ -1,3 +1,4 @@
+// Made by Logan Milbrandt, Jose Riquelme, and Viorel Ortiz
 package TicTacToe;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -12,28 +13,32 @@ import javax.swing.text.BadLocationException;
 
 import org.junit.jupiter.api.Test;
 
+//Class containing test methods for TicTacToe application
 class TicTacToeTests {
+	// Test case to check if large entry in minutes field is trimmed to last two digits
 	@Test
 	void testLargeEntry() {
-		Main testMain = new Main();
+		MainMenu testMain = new MainMenu();
 		testMain.getMinField().setText("2345");
 		String s = testMain.getMinField().getText();
 		testMain.dispose();
 		assertEquals(true, s.equals("45"));
 	}
 	
+	// Test case to check if small entry in minutes field is padded with '0'
 	@Test
 	void testSmallEntry() {
-		Main testMain = new Main();
+		MainMenu testMain = new MainMenu();
 		testMain.getMinField().setText("1");
 		String s = testMain.getMinField().getText();
 		testMain.dispose();
 		assertEquals(true, s.equals("01"));
 	}
 	
+	// Test case to check the remove method of DocumentFilter
 	@Test
 	void testRemove() throws BadLocationException {
-		Main testMain = new Main();
+		MainMenu testMain = new MainMenu();
 		testMain.getMinField().setText("24");
 		testMain.getMinDocument().remove(0, 0);
 		String s = testMain.getMinField().getText();
@@ -41,22 +46,25 @@ class TicTacToeTests {
 		assertEquals(true, s.equals("02"));
 	}
 	
+	// Test case to check the calcTime method in MainMenu class
 	@Test
 	void testCalcTime() {
-		Main testMain = new Main();
+		MainMenu testMain = new MainMenu();
 		int time = testMain.calcTime("01", "30");
 		testMain.dispose();
 		assertEquals(true, time == 90);
 	}
 	
+	// Test case to check if the game declares Player X as winner for diagonal line
 	@Test
 	void testCheckWinDiagonal1() {
-		Main testMain = new Main();
+		MainMenu testMain = new MainMenu();
 		Game testGame = new Game(testMain, 60, true);
 		JButton[][] A = testGame.getBtnArray();
 		int i = 0;
 		int j = 0;
 		ActionListener[] B;
+		// Iterate through diagonal line and perform actions on buttons
 		while(i != 3 && j != 3) {
 			B = A[i][j].getActionListeners();
 			B[0].actionPerformed(new ActionEvent(A[i][j], ActionEvent.ACTION_PERFORMED, null));
@@ -73,14 +81,16 @@ class TicTacToeTests {
 		assertEquals(true, s.equals("Player X Wins!"));
 	}
 	
+	// Test case to check if the game declares Player X as winner for another diagonal line
 	@Test
 	void testCheckWinDiagonal2() {
-		Main testMain = new Main();
+		MainMenu testMain = new MainMenu();
 		Game testGame = new Game(testMain, 60, true);
 		JButton[][] A = testGame.getBtnArray();
 		int i = 0;
 		int j = 2;
 		ActionListener[] B;
+		// Iterate through diagonal line and perform actions on buttons
 		while(i != 3 && j != -1) {
 			B = A[i][j].getActionListeners();
 			B[0].actionPerformed(new ActionEvent(A[i][j], ActionEvent.ACTION_PERFORMED, null));
@@ -97,14 +107,16 @@ class TicTacToeTests {
 		assertEquals(true, s.equals("Player X Wins!"));
 	}
 	
+	// Test case to check if the game declares Player X as winner for a horizontal line
 	@Test
 	void testCheckWinHorizontal() {
-		Main testMain = new Main();
+		MainMenu testMain = new MainMenu();
 		Game testGame = new Game(testMain, 60, true);
 		JButton[][] A = testGame.getBtnArray();
 		int i = 0;
 		int j = 0;
 		ActionListener[] B;
+		// Iterate through horizontal line and perform actions on buttons
 		while(i != 3) {
 			B = A[i][j].getActionListeners();
 			B[0].actionPerformed(new ActionEvent(A[i][j], ActionEvent.ACTION_PERFORMED, null));
@@ -120,14 +132,16 @@ class TicTacToeTests {
 		assertEquals(true, s.equals("Player X Wins!"));
 	}
 	
+	// Test case to check if the game declares Player X as winner for a vertical line
 	@Test
 	void testCheckWinVertical() {
-		Main testMain = new Main();
+		MainMenu testMain = new MainMenu();
 		Game testGame = new Game(testMain, 60, true);
 		JButton[][] A = testGame.getBtnArray();
 		int i = 0;
 		int j = 0;
 		ActionListener[] B;
+		// Iterate through vertical line and perform actions on buttons
 		while(j != 3) {
 			B = A[i][j].getActionListeners();
 			B[0].actionPerformed(new ActionEvent(A[i][j], ActionEvent.ACTION_PERFORMED, null));
@@ -143,9 +157,10 @@ class TicTacToeTests {
 		assertEquals(true, s.equals("Player X Wins!"));
 	}
 	
+	// Test case to check if the grid layout creation calculates side width correctly
 	@Test
 	void testCreateGBL() {
-		Main testMain = new Main();
+		MainMenu testMain = new MainMenu();
 		Game testGame = new Game(testMain, 60, true);
 		testGame.setBounds(0, 0, 500, 500);
 		int sideWidth = testGame.createGBL(new GridBagLayout());
@@ -154,9 +169,10 @@ class TicTacToeTests {
 		assertEquals(true, sideWidth == (500 / 4 -15));
 	}
 	
+	// Test case to check if the game declares Player O as winner in case of forfeit
 	@Test
 	void testForfeit() {
-		Main testMain = new Main();
+		MainMenu testMain = new MainMenu();
 		Game testGame = new Game(testMain, 60, true);
 		JButton button = testGame.getForfeitBtn();
 		ActionListener[] B = button.getActionListeners();
@@ -167,9 +183,10 @@ class TicTacToeTests {
 		assertEquals(true, s.equals("FORFEIT: Player O Wins!"));
 	}
 	
+	// Test case to check if the game declares draw in case no one wins
 	@Test
 	void testDraw() {
-		Main testMain = new Main();
+		MainMenu testMain = new MainMenu();
 		Game testGame = new Game(testMain, 60, true);
 		JButton[][] A = testGame.getBtnArray();
 		ActionListener[] B;
@@ -177,6 +194,7 @@ class TicTacToeTests {
 		int j = 0;
 		int m = 2;
 		int n = 0;
+		// Iterate through the grid and perform actions on buttons
 		for(int a = 0; a < 9; a++) {
 			if(testGame.getPlayer() == 0) {
 				B = A[i][j].getActionListeners();
@@ -207,9 +225,10 @@ class TicTacToeTests {
 		assertEquals(true, s.equals("DRAW!"));
 	}
 	
+	// Test case to check if the iterateTimer method decrements the timer correctly
 	@Test
 	void testIterateTimer() throws InterruptedException {
-		Main testMain = new Main();
+		MainMenu testMain = new MainMenu();
 		Game testGame = new Game(testMain, 10, true);
 		testGame.iterateTimer();
 		String s = testGame.getXTimer().getText();
@@ -218,13 +237,15 @@ class TicTacToeTests {
 		assertEquals(true, s.equals("00:09"));
 	}
 	
+	// Test case to check if the grid is initiated correctly in the Game class
 	@Test
 	void testInitiateGrid() {
-		Main testMain = new Main();
+		MainMenu testMain = new MainMenu();
 		Game testGame = new Game(testMain, 60, true);
 		JButton[][] A = testGame.getBtnArray();
 		boolean test = true;
 		outerloop:
+		// Iterate through the grid and check the client properties
 		for(int i = 0; i < 3; i++) {
 			for(int j = 0; j < 3; j++) {
 				A[i][j].getClientProperty("x");
@@ -240,9 +261,10 @@ class TicTacToeTests {
 		assertEquals(true, test);
 	}
 	
+	// Test case to check if the highlight method highlights buttons correctly
 	@Test
 	void testHighlight() {
-		Main testMain = new Main();
+		MainMenu testMain = new MainMenu();
 		Game testGame = new Game(testMain, 60, true);
 		JButton[][] A = testGame.getBtnArray();
 		testGame.highlight(3, 0, 0, 2);
@@ -250,6 +272,7 @@ class TicTacToeTests {
 		Color text = Color.WHITE;
 		boolean test = true;
 		int i = 0;
+		// Iterate through the buttons and check if they are highlighted correctly
 		for(int j = 0; j < 3; j++) {
 			if(!back.equals(A[i][j].getBackground()) || !text.equals(A[i][j].getForeground())) {
 				test = false;
@@ -261,9 +284,10 @@ class TicTacToeTests {
 		assertEquals(true, test);
 	}
 	
+	// Test case to check if the end method displays the correct message
 	@Test
 	void testEnd() {
-		Main testMain = new Main();
+		MainMenu testMain = new MainMenu();
 		Game testGame = new Game(testMain, 60, true);
 		testGame.end("Player ");
 		String s = testGame.getMSG().getText();
@@ -274,7 +298,7 @@ class TicTacToeTests {
 	
 	@Test
 	void testMark() {
-		Main testMain = new Main();
+		MainMenu testMain = new MainMenu();
 		Game testGame = new Game(testMain, 60, true);
 		JButton[][] A = testGame.getBtnArray();
 		testGame.mark(A[0][0]);
@@ -286,7 +310,7 @@ class TicTacToeTests {
 	
 	@Test
 	void testSwitchTurn() {
-		Main testMain = new Main();
+		MainMenu testMain = new MainMenu();
 		Game testGame = new Game(testMain, 60, true);
 		testGame.switchTurn();
 		String s = testGame.getMSG().getText();

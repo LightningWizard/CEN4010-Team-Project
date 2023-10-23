@@ -1,3 +1,4 @@
+// Made by Logan Milbrandt, Jose Riquelme, and Viorel Ortiz
 package TicTacToe;
 
 import java.awt.Color;
@@ -20,39 +21,44 @@ import javax.swing.Timer;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
+//TicTacToe Game class that extends JFrame
 public class Game extends JFrame {
-	private JFrame frame;
-	private int xTime;
-	private int oTime;
-	private boolean test;
-	
-	private int player = 0;
-	private int min = 0;
-	private int sec = 0;
-	private int turns = 0;
-	
-	private JLabel msg;
-	private JPanel contentPane;
-	private JButton[][] A;
-	private ActionListener gridListener;
-	
-	private JButton forfeitBtn;
-	private JLabel xLabel;
-	private JLabel oLabel;
-	private JLabel xTimer;
-	private JLabel oTimer;
-	private JPanel timePanel;
-	private Timer t;
-	
-	private JOptionPane optPane;
-	private JDialog dialog;
-	
+ private JFrame frame; // Main frame of the game
+ private int xTime; // Time for player X
+ private int oTime; // Time for player O
+ private boolean test; // Flag for testing purposes
+
+ // Game variables
+ private int player = 0; // Current player (0 for X, 1 for O)
+ private int min = 0; // Minutes on the timer
+ private int sec = 0; // Seconds on the timer
+ private int turns = 0; // Number of turns taken in the game
+
+ // UI components
+ private JLabel msg; // Message label indicating the current player's turn
+ private JPanel contentPane; // Main content panel
+ private JButton[][] grid; // 2D array of buttons representing the Tic-Tac-Toe grid
+ private ActionListener gridListener; // Action listener for grid buttons
+
+ private JButton forfeitBtn; // Button for forfeiting the game
+ private JLabel xLabel; // Label for player X
+ private JLabel oLabel; // Label for player O
+ private JLabel xTimer; // Timer label for player X
+ private JLabel oTimer; // Timer label for player O
+ private JPanel timePanel; // Panel for displaying timers
+ private Timer gameTimer; // Timer for game countdown
+
+ private JOptionPane optPane; // Option pane for displaying messages
+ private JDialog dialog; // Dialog for displaying messages
+
+ // Constructor for the Game class
 	public Game(JFrame inFrame, int inTime, boolean inTest) {
 		frame = inFrame;
 		xTime = inTime;
 		oTime = inTime;
 		test = inTest;
 		
+		// Set up the main frame
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(0, 0, 1000, 750);
 		setLocationRelativeTo(null);
@@ -60,11 +66,13 @@ public class Game extends JFrame {
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		
+		// Set up the GridBagLayout for the main content pane
 		setContentPane(contentPane);
 		GridBagLayout gblContentPane = new GridBagLayout();
 		int sideWidth = createGBL(gblContentPane);
 		contentPane.setLayout(gblContentPane);
 		
+		// Initialize and add the message label
 		msg = new JLabel("Player X's Turn");
 		msg.setFont(new Font("Arial", Font.BOLD, getHeight() / 20));
 		GridBagConstraints gbcMessage = new GridBagConstraints();
@@ -73,7 +81,8 @@ public class Game extends JFrame {
 		gbcMessage.gridy = 3;
 		contentPane.add(msg, gbcMessage);
 		
-		A = new JButton[3][3];
+		// Initialize the grid of buttons and add action listener
+		grid = new JButton[3][3];
 		gridListener = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -83,6 +92,7 @@ public class Game extends JFrame {
 		};
 		initiateGrid();
 		
+		// Set up the panel for displaying timers
 		timePanel = new JPanel();
 		timePanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		GridBagLayout gblTime = new GridBagLayout();
@@ -90,6 +100,7 @@ public class Game extends JFrame {
 		gblTime.rowHeights = new int[] {0, 0, 0, 0, 0};
 		timePanel.setLayout(gblTime);
 		
+		// Initialize and add labels for player X and player O
 		GridBagConstraints gbcLabel = new GridBagConstraints();
 		Font font = new Font("Arial", Font.BOLD, getHeight() / 20);
 		xLabel = new JLabel("Player X");
@@ -106,6 +117,7 @@ public class Game extends JFrame {
 		gbcLabel.insets = new Insets(getHeight() / 20, 0, 10, 0);
 		timePanel.add(oLabel, gbcLabel);
 		
+		// Set up timer labels for player X and player O
 		Border border = BorderFactory.createLineBorder(Color.BLACK);
 		Font timerFont = new Font("Arial", Font.PLAIN, getHeight() / 24);
 		xTimer = new JLabel(String.format("%02d:%02d", xTime / 60, xTime % 60));
@@ -113,24 +125,28 @@ public class Game extends JFrame {
 		xTimer.setFont(timerFont);
 		xTimer.setBorder(border);
 		
+		
 		oTimer = new JLabel(String.format("%02d:%02d", oTime / 60, oTime % 60));
 		oTimer.setHorizontalAlignment(JLabel.HORIZONTAL);
 		oTimer.setFont(timerFont);
 		oTimer.setBorder(border);
-		t = new Timer(1000, new ActionListener() {
+		gameTimer = new Timer(1000, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				iterateTimer();
 			}
 		});
+		
+		// Add timer labels to the time panel
 		GridBagConstraints gbcTimer = new GridBagConstraints();
 		gbcTimer.fill = GridBagConstraints.HORIZONTAL;
 		gbcTimer.gridy = 1;
 		timePanel.add(xTimer, gbcTimer);
 		gbcTimer.gridy = 3;
 		timePanel.add(oTimer, gbcTimer);
-		t.start();
+		gameTimer.start();
 		
+		// Set up forfeit button and add it to the time panel
 		forfeitBtn = new JButton("FORFEIT");
 		forfeitBtn.setFont(new Font("Arial", Font.BOLD, getHeight() / 26));
 		forfeitBtn.addActionListener(new ActionListener() {
@@ -143,6 +159,7 @@ public class Game extends JFrame {
 		gbcTimer.insets = new Insets(getHeight() / 12, 0, 0, 0);
 		timePanel.add(forfeitBtn, gbcTimer);
 		
+		// Add the time panel to the main content pane
 		GridBagConstraints gbcPanel = new GridBagConstraints();
 		gbcPanel.anchor = GridBagConstraints.NORTH;
 		gbcPanel.gridx = 4;
@@ -150,6 +167,8 @@ public class Game extends JFrame {
 		gbcPanel.gridheight = 4;
 		contentPane.add(timePanel, gbcPanel);
 	}
+	
+	// Getters and setters for various properties
 	
 	public int getPlayer() {
 		return player;
@@ -164,7 +183,7 @@ public class Game extends JFrame {
 		return msg;
 	}
 	public JButton[][] getBtnArray() {
-		return A;
+		return grid;
 	}
 	public JLabel getXLabel() {
 		return xLabel;
@@ -182,7 +201,7 @@ public class Game extends JFrame {
 		return forfeitBtn;
 	}
 	public Timer getTimer() {
-		return t;
+		return gameTimer;
 	}
 	public JOptionPane getOptPane() {
 		return optPane;
@@ -194,6 +213,7 @@ public class Game extends JFrame {
 		player = p;
 	}
 	
+	// Method to recursively check for a winning condition
 	public int check(JButton[][] A, int x, int y, int i, int j, int p) {
 		if(0 <= x + i && x + i <= A.length - 1) {
 			if (0 <= y + j && y + j <= A[x + i].length - 1) {
@@ -217,6 +237,7 @@ public class Game extends JFrame {
 		return 0;
 	}
 	
+	// Method to check if a player has won the game
 	public void checkWin(JButton button) {
 		mark(button);
 		turns++;
@@ -225,28 +246,28 @@ public class Game extends JFrame {
 		int y = (int) button.getClientProperty("y");
 		
 		int win = 0;
-		int val1 = check(A, x, y, -1, -1, player);
-		int val2 = check(A, x, y, 1, 1, player);
+		int val1 = check(grid, x, y, -1, -1, player);
+		int val2 = check(grid, x, y, 1, 1, player);
 		
 		do {
 			if(3 <= val1 + val2 + 1) {
 				win = 1;
 				break;
 			}
-			val1 = check(A, x, y, -1, 0, player);
-			val2 = check(A, x, y, 1, 0, player);
+			val1 = check(grid, x, y, -1, 0, player);
+			val2 = check(grid, x, y, 1, 0, player);
 			if(3 <= val1 + val2 + 1) {
 				win = 2;
 				break;
 			}
-			val1 = check(A, x, y, 0, 1, player);
-			val2 = check(A, x, y, 0, -1, player);
+			val1 = check(grid, x, y, 0, 1, player);
+			val2 = check(grid, x, y, 0, -1, player);
 			if(3 <= val1 + val2 + 1) {
 				win = 3;
 				break;
 			}
-			val1 = check(A, x, y, -1, 1, player);
-			val2 = check(A, x, y, 1, -1, player);
+			val1 = check(grid, x, y, -1, 1, player);
+			val2 = check(grid, x, y, 1, -1, player);
 			if(3 <= val1 + val2 + 1) {
 				win = 4;
 				break;
@@ -262,6 +283,8 @@ public class Game extends JFrame {
 			end("Player ");
 		}
 	}
+	
+	// Method to create GridBagLayout for the content pane and return side width
 	public int createGBL(GridBagLayout gblContentPane) {
 		int sideWidth = getWidth() / 4 - 15;
 		int gridWidth = getWidth() / 6;
@@ -275,6 +298,7 @@ public class Game extends JFrame {
 		return sideWidth;
 	}
 	
+	// Method to end the game and display the result
 	public void end(String s) {
 		if(s != null) {
 			String winner = "X";
@@ -286,19 +310,22 @@ public class Game extends JFrame {
 		else {
 			s = "DRAW!";
 		}
+		// End the game and display the result (win, draw, or forfeit)
 		msg.setText(s);
-		t.stop();
+		gameTimer.stop();
 		if(!test) {
 			gameOver(frame, msg.getText());
 		}
 	}
 	
+	// Method to handle game over scenarios
 	public void gameOver(JFrame frame, String conclusion) {
 		Object[] option={"Back to Menu","Close"};
 		optPane = new JOptionPane(conclusion, JOptionPane.QUESTION_MESSAGE, JOptionPane.YES_NO_CANCEL_OPTION,  null, option, option[0]);
 		dialog = optPane.createDialog(this, "Game Over");
 		dialog.setVisible(true);
 		String s = (String) optPane.getValue();
+		// Display game over dialog with options to go back to the menu or close the game
 		if(s != null) {
 	        if(s.equals(option[0])) {
 	            dispose();
@@ -315,52 +342,56 @@ public class Game extends JFrame {
 		}
 	}
 	
+	// Method to highlight the winning combination on the grid
 	public void highlight(int win, int x, int y, int val1) {
+		// Highlight the winning combination on the grid
 		switch(win) {
 		case 1:
 			for(int i = 0; i < 3; i++) {
-				A[x - val1 + i][y - val1 + i].setBackground(Color.BLACK);
-				A[x - val1 + i][y - val1 + i].setForeground(Color.WHITE);
+				grid[x - val1 + i][y - val1 + i].setBackground(Color.BLACK);
+				grid[x - val1 + i][y - val1 + i].setForeground(Color.WHITE);
 			}
 			break;
 		case 2:
 			for(int i = 0; i < 3; i++) {
-				A[x - val1 + i][y].setBackground(Color.BLACK);
-				A[x - val1 + i][y].setForeground(Color.WHITE);
+				grid[x - val1 + i][y].setBackground(Color.BLACK);
+				grid[x - val1 + i][y].setForeground(Color.WHITE);
 			}
 			break;
 		case 3:
 			for(int i = 0; i < 3; i++) {
-				A[x][y + val1 - i].setBackground(Color.BLACK);
-				A[x][y + val1 - i].setForeground(Color.WHITE);
+				grid[x][y + val1 - i].setBackground(Color.BLACK);
+				grid[x][y + val1 - i].setForeground(Color.WHITE);
 			}
 			break;
 		case 4:
 			for(int i = 0; i < 3; i++) {
-				A[x - val1 + i][y + val1 - i].setBackground(Color.BLACK);
-				A[x - val1 + i][y + val1 - i].setForeground(Color.WHITE);
+				grid[x - val1 + i][y + val1 - i].setBackground(Color.BLACK);
+				grid[x - val1 + i][y + val1 - i].setForeground(Color.WHITE);
 			}
 			break;
 		}
 	}
 	
+	// Method to initialize the grid of buttons
 	public void initiateGrid() {
 		GridBagConstraints gbcGridButton = new GridBagConstraints();
 		gbcGridButton.fill = GridBagConstraints.BOTH;
 		
 		for(int i = 0; i < 3; i++) {
 			for(int j = 0; j < 3; j++) {
-				A[i][j] = new JButton();
-				A[i][j].putClientProperty("x", i);
-				A[i][j].putClientProperty("y", j);
-				A[i][j].addActionListener(gridListener);
+				grid[i][j] = new JButton();
+				grid[i][j].putClientProperty("x", i);
+				grid[i][j].putClientProperty("y", j);
+				grid[i][j].addActionListener(gridListener);
 				gbcGridButton.gridx = i + 1;
 				gbcGridButton.gridy = j;
-				contentPane.add(A[i][j], gbcGridButton);
+				contentPane.add(grid[i][j], gbcGridButton);
 			}
 		}
 	}
 	
+	// Method to iterate the game timer
 	public void iterateTimer() {
 		if(xTime > 0 && player == 0) {
 			xTime -= 1;
@@ -379,7 +410,9 @@ public class Game extends JFrame {
 		}
 	}
 	
+	// Method to mark the selected button with the player's symbol
 	public void mark(JButton button) {
+		// Mark the selected button with the player's symbol (X or O)
 		if (player == 0) {
 			button.setText("X");
 			button.setForeground(Color.RED);
@@ -393,6 +426,7 @@ public class Game extends JFrame {
 		button.removeActionListener(gridListener);
 	}
 	
+	// Method to switch the turn between players
 	public void switchTurn() {
 		String s;
 		if(player == 0) {
