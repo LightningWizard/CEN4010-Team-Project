@@ -17,6 +17,10 @@ import javax.swing.text.DocumentFilter;
 
 public class Main extends JFrame {
 	private JPanel contentPane;
+	private JTextField minField;
+	private JTextField secField;
+	private AbstractDocument minDocument;
+	private AbstractDocument secDocument;
 	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -87,8 +91,8 @@ public class Main extends JFrame {
 			}
 		};
 		
-		JTextField minField = new JTextField("00");
-		AbstractDocument minDocument = (AbstractDocument) minField.getDocument();
+		minField = new JTextField("00");
+		minDocument = (AbstractDocument) minField.getDocument();
 		minDocument.setDocumentFilter(filter);
 		minField.setHorizontalAlignment(JTextField.CENTER);
 		minField.setFont(new Font("Arial", Font.BOLD, getHeight() / 8));
@@ -96,8 +100,8 @@ public class Main extends JFrame {
 		constraints.gridy = 1;
 		contentPane.add(minField, constraints);
 		
-		JTextField secField = new JTextField("00");
-		AbstractDocument secDocument = (AbstractDocument) secField.getDocument();
+		secField = new JTextField("00");
+		secDocument = (AbstractDocument) secField.getDocument();
 		secDocument.setDocumentFilter(filter);
 		secField.setHorizontalAlignment(JTextField.CENTER);
 		secField.setFont(new Font("Arial", Font.BOLD, getHeight() / 8));
@@ -109,8 +113,8 @@ public class Main extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				setVisible(false);
-				int time = 60 * Integer.parseInt(minField.getText()) + Integer.parseInt(secField.getText());
-				Game gFrame = new Game((JFrame) SwingUtilities.getRoot(button), time);
+				int time = calcTime(minField.getText(), secField.getText());
+				Game gFrame = new Game((JFrame) SwingUtilities.getRoot(button), time, false);
 				gFrame.setVisible(true);
 			}
 		});
@@ -119,5 +123,25 @@ public class Main extends JFrame {
 		constraints.gridy = 2;
 		constraints.gridwidth = 2;
 		contentPane.add(button, constraints);
+	}
+	
+	public int calcTime(String min, String sec) {
+		return 60 * Integer.parseInt(min) + Integer.parseInt(sec);
+	}
+	
+	public JTextField getMinField() {
+		return minField;
+	}
+	
+	public JTextField getSecField() {
+		return secField;
+	}
+	
+	public AbstractDocument getMinDocument() {
+		return minDocument;
+	}
+	
+	public AbstractDocument getSecDocument() {
+		return secDocument;
 	}
 }
