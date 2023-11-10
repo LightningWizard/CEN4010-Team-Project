@@ -52,7 +52,7 @@ public class Game extends JFrame {
  private JDialog dialog; // Dialog for displaying messages
 
  // Constructor for the Game class
-	public Game(JFrame inFrame, int inTime, boolean inTest) {
+	public Game(JFrame inFrame, int inTime, int m, int n, int k, boolean inTest) {
 		frame = inFrame;
 		xTime = inTime;
 		oTime = inTime;
