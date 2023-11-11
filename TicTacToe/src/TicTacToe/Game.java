@@ -31,7 +31,10 @@ public class Game extends JFrame {
  private boolean test; // Flag for testing purposes
 
  // Game variables
- private int player = 0; // Current player (0 for X, 1 for O)
+ private int player; // Current player (0 for X, 1 for O)
+ private int m;
+ private int n;
+ private boolean twoPlayers;
  private int min = 0; // Minutes on the timer
  private int sec = 0; // Seconds on the timer
  private int turns = 0; // Number of turns taken in the game
@@ -58,7 +61,17 @@ public class Game extends JFrame {
 		frame = inFrame;
 		xTime = inTime;
 		oTime = inTime;
+		this.m = m;
+		this.n = n;
+		this.twoPlayers = twoPlayers;
 		test = inTest;
+		
+		if(firstPlayer.equals("X")) {
+			player = 0;
+		}
+		else {
+			player = 1;
+		}
 		
 		// Set up the main frame
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -98,22 +111,8 @@ public class Game extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				JButton button = (JButton) e.getSource();
 				checkWin(button, m, n, k);
-				if(player == 1) {
-					Random rand = new Random();
-					int x = rand.nextInt(m);
-					int y = rand.nextInt(n);
-					outerloop:
-					for(int i = 0; i < m; i++) {
-						for(int j = 0; j < n; j++) {
-							ActionListener[] B = grid[x % m][y % n].getActionListeners();
-							if(B.length > 0) {
-								B[0].actionPerformed(new ActionEvent(grid[x % m][y % n], ActionEvent.ACTION_PERFORMED, null));
-								break outerloop;
-							}
-							y++;
-						}
-						x++;
-					}
+				if(!twoPlayers && player == 1) {
+					computerMark(m, n);
 				}
 			}
 		};
@@ -129,7 +128,6 @@ public class Game extends JFrame {
 		msg.setFont(new Font("Arial", Font.BOLD, getHeight() / 20));
 		GridBagConstraints gbcMessage = new GridBagConstraints();
 		gbcMessage.gridx = 1;
-		//gbcMessage.gridwidth = 3;
 		gbcMessage.gridy = 1;
 		contentPane.add(msg, gbcMessage);
 		
@@ -207,6 +205,12 @@ public class Game extends JFrame {
 		gbcPanel.gridy = 0;
 		gbcPanel.gridheight = 4;
 		contentPane.add(timePanel, gbcPanel);
+		
+		if(!twoPlayers && player == 1) {
+			initialMark(max);
+			switchTurn();
+			turns++;
+		}
 	}
 	
 	// Getters and setters for various properties
@@ -325,6 +329,24 @@ public class Game extends JFrame {
 		}
 	}
 	
+	public void computerMark(int m, int n) {
+		Random rand = new Random();
+		int x = rand.nextInt(m);
+		int y = rand.nextInt(n);
+		outerloop:
+		for(int i = 0; i < m; i++) {
+			for(int j = 0; j < n; j++) {
+				ActionListener[] B = grid[x % m][y % n].getActionListeners();
+				if(B.length > 0) {
+					B[0].actionPerformed(new ActionEvent(grid[x % m][y % n], ActionEvent.ACTION_PERFORMED, null));
+					break outerloop;
+				}
+				y++;
+			}
+			x++;
+		}
+	}
+	
 	// Method to create GridBagLayout for the content pane and return side width
 	public int createGBL(GridBagLayout gblContentPane, int m, int n) {
 		int sideWidth = getWidth() / 4 - 15;
@@ -421,22 +443,31 @@ public class Game extends JFrame {
 		}
 	}
 	
+	public void initialMark(int max) {
+		Random rand = new Random();
+		int x = rand.nextInt(m);
+		int y = rand.nextInt(n);
+		
+		JButton button = grid[x][y];
+		button.setText("O");
+		button.setForeground(Color.BLUE);
+		button.setFont(new Font("Arial", Font.BOLD, getWidth() / (4 * max)));
+		button.removeActionListener(gridListener);
+	}
+	
 	// Method to initialize the grid of buttons
 	public void initiateGrid(JPanel gridPane, int m, int n) {
 		GridBagConstraints gbcGridButton = new GridBagConstraints();
-		//gbcGridButton.fill = GridBagConstraints.BOTH;
-		
+
+		int max = Math.max(m, n);
 		for(int i = 0; i < m; i++) {
 			for(int j = 0; j < n; j++) {
 				grid[i][j] = new JButton();
+				grid[i][j].addActionListener(gridListener);
 				grid[i][j].putClientProperty("x", i);
 				grid[i][j].putClientProperty("y", j);
-				grid[i][j].addActionListener(gridListener);
-				//New
-				int max = Math.max(m, n);
 				grid[i][j].setMaximumSize(new Dimension(getWidth() / (2 * max), getWidth() / (2 * max)));
 				grid[i][j].setPreferredSize(new Dimension(getWidth() / (2 * max), getWidth() / (2 * max)));
-				//New
 				gbcGridButton.gridx = i;
 				gbcGridButton.gridy = j;
 				gridPane.add(grid[i][j], gbcGridButton);
