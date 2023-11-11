@@ -47,6 +47,7 @@ public class MainMenu extends JFrame {
         contentPane = new JPanel(); // Initialize main content panel
 		
 		setContentPane(contentPane);
+
 		GridBagLayout gblContentPane = new GridBagLayout();
 		int[] height = {getHeight() / 20, getHeight() / 5, getHeight() / 20, getHeight() / 5, getHeight() / 5};
 		int[] width = {getWidth() / 4, getWidth() / 4, getWidth() / 4};
@@ -116,7 +117,7 @@ public class MainMenu extends JFrame {
 		constraints.gridx = 1;
 		contentPane.add(secField, constraints);
 		
-		JLabel mLabel = new JLabel("ROWS");
+		JLabel mLabel = new JLabel("COLUMNS");
 		mLabel.setHorizontalAlignment(JLabel.CENTER);
 		mLabel.setVerticalAlignment(JLabel.BOTTOM);
 		mLabel.setFont(new Font("Arial", Font.BOLD, getHeight() / 24));
@@ -124,7 +125,7 @@ public class MainMenu extends JFrame {
 		constraints.gridy = 2;
 		contentPane.add(mLabel, constraints);
 		
-		JLabel nLabel = new JLabel("COLUMNS");
+		JLabel nLabel = new JLabel("ROWS");
 		nLabel.setHorizontalAlignment(JLabel.CENTER);
 		nLabel.setVerticalAlignment(JLabel.BOTTOM);
 		nLabel.setFont(new Font("Arial", Font.BOLD, getHeight() / 24));
@@ -168,13 +169,18 @@ public class MainMenu extends JFrame {
 		button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				setVisible(false);
-				int time = calcTime(minField.getText(), secField.getText());
 				int m = Integer.parseInt(mField.getText());
 				int n = Integer.parseInt(nField.getText());
 				int k = Integer.parseInt(kField.getText());
-				Game gFrame = new Game((JFrame) SwingUtilities.getRoot(button), time, m, n, k, false);
-				gFrame.setVisible(true);
+				if (k <= m || k <= n) {
+					setVisible(false);
+					int time = calcTime(minField.getText(), secField.getText());
+					Game gFrame = new Game((JFrame) SwingUtilities.getRoot(button), time, m, n, k, false);
+					gFrame.setVisible(true);
+				}
+				else {
+					
+				}
 			}
 		});
 		button.setFont(new Font("Arial", Font.BOLD, getHeight() / 8));

@@ -163,7 +163,7 @@ class TicTacToeTests {
 		MainMenu testMain = new MainMenu();
 		Game testGame = new Game(testMain, 60, 3, 3, 3, true);
 		testGame.setBounds(0, 0, 500, 500);
-		int sideWidth = testGame.createGBL(new GridBagLayout());
+		int sideWidth = testGame.createGBL(new GridBagLayout(), 3, 3);
 		testGame.dispose();
 		testMain.dispose();
 		assertEquals(true, sideWidth == (500 / 4 -15));
@@ -267,7 +267,7 @@ class TicTacToeTests {
 		MainMenu testMain = new MainMenu();
 		Game testGame = new Game(testMain, 60, 3, 3, 3, true);
 		JButton[][] A = testGame.getBtnArray();
-		testGame.highlight(3, 0, 0, 2);
+		testGame.highlight(3, 0, 0, 2, 3);
 		Color back = Color.BLACK;
 		Color text = Color.WHITE;
 		boolean test = true;

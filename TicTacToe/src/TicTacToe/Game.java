@@ -2,6 +2,7 @@
 package TicTacToe;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -68,35 +69,57 @@ public class Game extends JFrame {
 		
 		// Set up the GridBagLayout for the main content pane
 		setContentPane(contentPane);
+		
 		GridBagLayout gblContentPane = new GridBagLayout();
-		int sideWidth = createGBL(gblContentPane);
+		
+		gblContentPane.columnWidths = new int[] {getWidth() / 4 - 15, getWidth() / 2, getWidth() / 4 - 15};
+		gblContentPane.rowHeights = new int[] {4 * getHeight() / 6, getHeight() / 6};
 		contentPane.setLayout(gblContentPane);
+		
+		JPanel gridPane = new JPanel();
+		gridPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		GridBagLayout gblGridPane = new GridBagLayout();
+		int max = Math.max(m, n);
+		int[] width = new int[m];
+		Arrays.fill(width, getWidth() / (2 * max));
+		gblGridPane.columnWidths = width;
+		int[] height = new int[n];
+		Arrays.fill(height, getWidth() / (2 * max));
+		gblGridPane.rowHeights = height;
+		gridPane.setPreferredSize(new Dimension(getWidth() / 2, getWidth() /2));
+		gridPane.setMaximumSize(new Dimension(getWidth() / 2, getWidth() /2));
+		gridPane.setLayout(gblGridPane);
+		
+		// Initialize the grid of buttons and add action listener
+		grid = new JButton[m][n];
+		gridListener = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JButton button = (JButton) e.getSource();
+				checkWin(button, m, n, k);
+			}
+		};
+		initiateGrid(gridPane, m, n);
+		
+		GridBagConstraints gbcPanes = new GridBagConstraints();
+		gbcPanes.gridx = 1;
+		gbcPanes.gridy = 0;
+		contentPane.add(gridPane, gbcPanes);
 		
 		// Initialize and add the message label
 		msg = new JLabel("Player X's Turn");
 		msg.setFont(new Font("Arial", Font.BOLD, getHeight() / 20));
 		GridBagConstraints gbcMessage = new GridBagConstraints();
 		gbcMessage.gridx = 1;
-		gbcMessage.gridwidth = 3;
-		gbcMessage.gridy = 3;
+		//gbcMessage.gridwidth = 3;
+		gbcMessage.gridy = 1;
 		contentPane.add(msg, gbcMessage);
-		
-		// Initialize the grid of buttons and add action listener
-		grid = new JButton[3][3];
-		gridListener = new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				JButton button = (JButton) e.getSource();
-				checkWin(button);
-			}
-		};
-		initiateGrid();
 		
 		// Set up the panel for displaying timers
 		timePanel = new JPanel();
 		timePanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		GridBagLayout gblTime = new GridBagLayout();
-		gblTime.columnWidths = new int[] {sideWidth};
+		gblTime.columnWidths = new int[] {getWidth() / 4 - 15};
 		gblTime.rowHeights = new int[] {0, 0, 0, 0, 0};
 		timePanel.setLayout(gblTime);
 		
@@ -162,7 +185,7 @@ public class Game extends JFrame {
 		// Add the time panel to the main content pane
 		GridBagConstraints gbcPanel = new GridBagConstraints();
 		gbcPanel.anchor = GridBagConstraints.NORTH;
-		gbcPanel.gridx = 4;
+		gbcPanel.gridx = 2;
 		gbcPanel.gridy = 0;
 		gbcPanel.gridheight = 4;
 		contentPane.add(timePanel, gbcPanel);
@@ -238,7 +261,7 @@ public class Game extends JFrame {
 	}
 	
 	// Method to check if a player has won the game
-	public void checkWin(JButton button) {
+	public void checkWin(JButton button, int m, int n, int k) {
 		mark(button);
 		turns++;
 		
@@ -250,46 +273,53 @@ public class Game extends JFrame {
 		int val2 = check(grid, x, y, 1, 1, player);
 		
 		do {
-			if(3 <= val1 + val2 + 1) {
+			if(k <= val1 + val2 + 1) {
 				win = 1;
 				break;
 			}
 			val1 = check(grid, x, y, -1, 0, player);
 			val2 = check(grid, x, y, 1, 0, player);
-			if(3 <= val1 + val2 + 1) {
+			if(k <= val1 + val2 + 1) {
 				win = 2;
 				break;
 			}
 			val1 = check(grid, x, y, 0, 1, player);
 			val2 = check(grid, x, y, 0, -1, player);
-			if(3 <= val1 + val2 + 1) {
+			if(k <= val1 + val2 + 1) {
 				win = 3;
 				break;
 			}
 			val1 = check(grid, x, y, -1, 1, player);
 			val2 = check(grid, x, y, 1, -1, player);
-			if(3 <= val1 + val2 + 1) {
+			if(k <= val1 + val2 + 1) {
 				win = 4;
 				break;
 			}
-			if(turns == 9) {
+			if(turns == m * n) {
 				end(null);
 				return;
 			}
 		} while (false);
 		switchTurn();
 		if(0 < win) {
-			highlight(win, x, y, val1);
+			highlight(win, x, y, val1, k);
 			end("Player ");
 		}
 	}
 	
 	// Method to create GridBagLayout for the content pane and return side width
-	public int createGBL(GridBagLayout gblContentPane) {
+	public int createGBL(GridBagLayout gblContentPane, int m, int n) {
 		int sideWidth = getWidth() / 4 - 15;
-		int gridWidth = getWidth() / 6;
+		int min = Math.min(m , n);
+		int gridWidth = getWidth() / (2 * min);
 		
-		gblContentPane.columnWidths = new int[]{sideWidth, gridWidth, gridWidth, gridWidth, sideWidth};
+		int[] widths = new int[2 + m];
+		widths[0] = sideWidth;
+		widths[widths.length - 1] = sideWidth;
+		for(int i = 1; i <= m; i++) {
+			widths[i] = gridWidth;
+		}
+		gblContentPane.columnWidths = widths;
 		
 		int[] height = new int[4];
 		Arrays.fill(height, gridWidth);
@@ -343,29 +373,29 @@ public class Game extends JFrame {
 	}
 	
 	// Method to highlight the winning combination on the grid
-	public void highlight(int win, int x, int y, int val1) {
+	public void highlight(int win, int x, int y, int val1, int k) {
 		// Highlight the winning combination on the grid
 		switch(win) {
 		case 1:
-			for(int i = 0; i < 3; i++) {
+			for(int i = 0; i < k; i++) {
 				grid[x - val1 + i][y - val1 + i].setBackground(Color.BLACK);
 				grid[x - val1 + i][y - val1 + i].setForeground(Color.WHITE);
 			}
 			break;
 		case 2:
-			for(int i = 0; i < 3; i++) {
+			for(int i = 0; i < k; i++) {
 				grid[x - val1 + i][y].setBackground(Color.BLACK);
 				grid[x - val1 + i][y].setForeground(Color.WHITE);
 			}
 			break;
 		case 3:
-			for(int i = 0; i < 3; i++) {
+			for(int i = 0; i < k; i++) {
 				grid[x][y + val1 - i].setBackground(Color.BLACK);
 				grid[x][y + val1 - i].setForeground(Color.WHITE);
 			}
 			break;
 		case 4:
-			for(int i = 0; i < 3; i++) {
+			for(int i = 0; i < k; i++) {
 				grid[x - val1 + i][y + val1 - i].setBackground(Color.BLACK);
 				grid[x - val1 + i][y + val1 - i].setForeground(Color.WHITE);
 			}
@@ -374,19 +404,24 @@ public class Game extends JFrame {
 	}
 	
 	// Method to initialize the grid of buttons
-	public void initiateGrid() {
+	public void initiateGrid(JPanel gridPane, int m, int n) {
 		GridBagConstraints gbcGridButton = new GridBagConstraints();
-		gbcGridButton.fill = GridBagConstraints.BOTH;
+		//gbcGridButton.fill = GridBagConstraints.BOTH;
 		
-		for(int i = 0; i < 3; i++) {
-			for(int j = 0; j < 3; j++) {
+		for(int i = 0; i < m; i++) {
+			for(int j = 0; j < n; j++) {
 				grid[i][j] = new JButton();
 				grid[i][j].putClientProperty("x", i);
 				grid[i][j].putClientProperty("y", j);
 				grid[i][j].addActionListener(gridListener);
-				gbcGridButton.gridx = i + 1;
+				//New
+				int max = Math.max(m, n);
+				grid[i][j].setMaximumSize(new Dimension(getWidth() / (2 * max), getWidth() / (2 * max)));
+				grid[i][j].setPreferredSize(new Dimension(getWidth() / (2 * max), getWidth() / (2 * max)));
+				//New
+				gbcGridButton.gridx = i;
 				gbcGridButton.gridy = j;
-				contentPane.add(grid[i][j], gbcGridButton);
+				gridPane.add(grid[i][j], gbcGridButton);
 			}
 		}
 	}
@@ -421,8 +456,7 @@ public class Game extends JFrame {
 			button.setText("O");
 			button.setForeground(Color.BLUE);
 		}
-		
-		button.setFont(new Font("Arial", Font.BOLD, button.getWidth() / 2));
+		button.setFont(new Font("Arial", Font.BOLD, button.getHeight() / 2));
 		button.removeActionListener(gridListener);
 	}
 	
