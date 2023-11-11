@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.awt.Toolkit;
 
 import javax.swing.*;
+import javax.swing.plaf.metal.MetalCheckBoxIcon;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
@@ -49,13 +50,29 @@ public class MainMenu extends JFrame {
 		setContentPane(contentPane);
 
 		GridBagLayout gblContentPane = new GridBagLayout();
+		/*
 		int[] height = {getHeight() / 20, getHeight() / 5, getHeight() / 20, getHeight() / 5, getHeight() / 5};
 		int[] width = {getWidth() / 4, getWidth() / 4, getWidth() / 4};
+		*/
+		//New
+		int[] height = {getHeight() / 4, getHeight() / 4, getHeight() / 4};
+		int[] width = {3 * getWidth() / 4};
+		//New
 		gblContentPane.columnWidths = width;
 		gblContentPane.rowHeights = height;
 		contentPane.setLayout(gblContentPane);
 		
 		// Labels for minutes and seconds
+		
+		JPanel topPane = new JPanel();
+		GridBagLayout gblTopPane = new GridBagLayout();
+		gblTopPane.columnWidths = new int[] {getWidth() / 8, getWidth() / 4, getWidth() / 4, getWidth() / 8};
+		gblTopPane.rowHeights = new int[] {getHeight() / 20, getHeight() / 5};
+		topPane.setLayout(gblTopPane);
+		GridBagConstraints gbcPanes = new GridBagConstraints();
+		gbcPanes.gridx = 0;
+		gbcPanes.gridy = 0;
+		contentPane.add(topPane, gbcPanes);
 		
 		JLabel minLabel = new JLabel("MINUTES");
 		GridBagConstraints constraints = new GridBagConstraints();
@@ -64,16 +81,20 @@ public class MainMenu extends JFrame {
 		minLabel.setFont(new Font("Arial", Font.BOLD, getHeight() / 24));
 		constraints.insets = new Insets(0, 0, 10, 5);
 		constraints.fill = GridBagConstraints.BOTH;
-		constraints.gridx = 0;
+		//constraints.gridx = 0;
+		constraints.gridx = 1;
 		constraints.gridy = 0;
-		contentPane.add(minLabel, constraints);
+		//contentPane.add(minLabel, constraints);
+		topPane.add(minLabel, constraints);
 		
 		JLabel secLabel = new JLabel("SECONDS");
 		secLabel.setHorizontalAlignment(JLabel.CENTER);
 		secLabel.setVerticalAlignment(JLabel.BOTTOM);
 		secLabel.setFont(new Font("Arial", Font.BOLD, getHeight() / 24));
-		constraints.gridx = 1;
-		contentPane.add(secLabel, constraints);
+		//constraints.gridx = 1;
+		constraints.gridx = 2;
+		//contentPane.add(secLabel, constraints);
+		topPane.add(secLabel, constraints);
 		
 		// Document filter for text fields to allow only valid input
 		DocumentFilter filter = new DocumentFilter() {
@@ -105,39 +126,55 @@ public class MainMenu extends JFrame {
 		minDocument.setDocumentFilter(filter);
 		minField.setHorizontalAlignment(JTextField.CENTER);
 		minField.setFont(new Font("Arial", Font.BOLD, getHeight() / 8));
-		constraints.gridx = 0;
+		//constraints.gridx = 0;
+		constraints.gridx = 1;
 		constraints.gridy = 1;
-		contentPane.add(minField, constraints);
+		//contentPane.add(minField, constraints);
+		topPane.add(minField, constraints);
 		
 		secField = new JTextField("00");
 		secDocument = (AbstractDocument) secField.getDocument();
 		secDocument.setDocumentFilter(filter);
 		secField.setHorizontalAlignment(JTextField.CENTER);
 		secField.setFont(new Font("Arial", Font.BOLD, getHeight() / 8));
-		constraints.gridx = 1;
-		contentPane.add(secField, constraints);
+		//constraints.gridx = 1;
+		constraints.gridx = 2;
+		//contentPane.add(secField, constraints);
+		topPane.add(secField, constraints);
+		
+		JPanel midPane = new JPanel();
+		GridBagLayout gblMidPane = new GridBagLayout();
+		gblMidPane.columnWidths = new int[] {getWidth() / 4, getWidth() / 4, getWidth() / 4};
+		gblMidPane.rowHeights = new int[] {getHeight() / 20, getHeight() / 5};
+		midPane.setLayout(gblMidPane);
+		gbcPanes.gridy = 1;
+		contentPane.add(midPane, gbcPanes);
 		
 		JLabel mLabel = new JLabel("COLUMNS");
 		mLabel.setHorizontalAlignment(JLabel.CENTER);
 		mLabel.setVerticalAlignment(JLabel.BOTTOM);
 		mLabel.setFont(new Font("Arial", Font.BOLD, getHeight() / 24));
 		constraints.gridx = 0;
-		constraints.gridy = 2;
-		contentPane.add(mLabel, constraints);
+		//constraints.gridy = 2;
+		constraints.gridy = 0;
+		//contentPane.add(mLabel, constraints);
+		midPane.add(mLabel, constraints);
 		
 		JLabel nLabel = new JLabel("ROWS");
 		nLabel.setHorizontalAlignment(JLabel.CENTER);
 		nLabel.setVerticalAlignment(JLabel.BOTTOM);
 		nLabel.setFont(new Font("Arial", Font.BOLD, getHeight() / 24));
 		constraints.gridx = 1;
-		contentPane.add(nLabel, constraints);
+		//contentPane.add(nLabel, constraints);
+		midPane.add(nLabel, constraints);
 		
 		JLabel kLabel = new JLabel("WIN");
 		kLabel.setHorizontalAlignment(JLabel.CENTER);
 		kLabel.setVerticalAlignment(JLabel.BOTTOM);
 		kLabel.setFont(new Font("Arial", Font.BOLD, getHeight() / 24));
 		constraints.gridx = 2;
-		contentPane.add(kLabel, constraints);
+		//contentPane.add(kLabel, constraints);
+		midPane.add(kLabel, constraints);
 		
 		JTextField mField = new JTextField("03");
 		AbstractDocument mDocument = (AbstractDocument) mField.getDocument();
@@ -145,8 +182,10 @@ public class MainMenu extends JFrame {
 		mField.setHorizontalAlignment(JTextField.CENTER);
 		mField.setFont(new Font("Arial", Font.BOLD, getHeight() / 8));
 		constraints.gridx = 0;
-		constraints.gridy = 3;
-		contentPane.add(mField, constraints);
+		//constraints.gridy = 3;
+		constraints.gridy = 1;
+		//contentPane.add(mField, constraints);
+		midPane.add(mField, constraints);
 		
 		JTextField nField = new JTextField("03");
 		AbstractDocument nDocument = (AbstractDocument) nField.getDocument();
@@ -154,7 +193,8 @@ public class MainMenu extends JFrame {
 		nField.setHorizontalAlignment(JTextField.CENTER);
 		nField.setFont(new Font("Arial", Font.BOLD, getHeight() / 8));
 		constraints.gridx = 1;
-		contentPane.add(nField, constraints);
+		//contentPane.add(nField, constraints);
+		midPane.add(nField, constraints);
 		
 		JTextField kField = new JTextField("03");
 		AbstractDocument kDocument = (AbstractDocument) kField.getDocument();
@@ -162,7 +202,55 @@ public class MainMenu extends JFrame {
 		kField.setHorizontalAlignment(JTextField.CENTER);
 		kField.setFont(new Font("Arial", Font.BOLD, getHeight() / 8));
 		constraints.gridx = 2;
-		contentPane.add(kField, constraints);
+		//contentPane.add(kField, constraints);
+		midPane.add(kField, constraints);
+		
+		JPanel botPane = new JPanel();
+		GridBagLayout gblBotPane = new GridBagLayout();
+		gblBotPane.columnWidths = new int[] {getWidth() / 8, getWidth() / 4, getWidth() / 4, getWidth() / 8};
+		gblBotPane.rowHeights = new int[] {getHeight() / 10, getHeight() / 10};
+		botPane.setLayout(gblBotPane);
+		gbcPanes.gridy = 2;
+		contentPane.add(botPane, gbcPanes);
+		
+		JCheckBox compPlayer = new JCheckBox("2 Players?");
+		/*
+		constraints.gridx = 0;
+		constraints.gridy = 4;
+		contentPane.add(compPlayer, constraints);
+		*/
+		compPlayer.setIcon(new MetalCheckBoxIcon() {
+			protected int getControlSize() {return getWidth() / 24;}
+		});
+		compPlayer.setFont(new Font("Arial", Font.BOLD, getHeight() / 24));
+		constraints.gridx = 1;
+		constraints.gridy = 0;
+		botPane.add(compPlayer, constraints);
+		
+		JPanel subPane = new JPanel();
+		GridBagLayout gblSubPane = new GridBagLayout();
+		gblSubPane.columnWidths = new int[] {getWidth() / 24, 5 * getWidth() / 24};
+		gblSubPane.rowHeights = new int[] {getHeight() / 10};
+		subPane.setLayout(gblSubPane);
+		constraints.gridy = 1;
+		botPane.add(subPane, constraints);
+		
+		String[] players = {"X", "O"};
+		JComboBox<String> firstPlayerBox = new JComboBox<String>(players);
+		firstPlayerBox.setFont(new Font("Arial", Font.BOLD, getHeight() / 24));
+		DefaultListCellRenderer listRenderer = new DefaultListCellRenderer();
+		listRenderer.setHorizontalAlignment(DefaultListCellRenderer.CENTER);
+		firstPlayerBox.setRenderer(listRenderer);
+		//constraints.gridx = 1;
+		//contentPane.add(firstPlayer, constraints);
+		constraints.gridx = 0;
+		constraints.gridy = 0;
+		subPane.add(firstPlayerBox, constraints);
+		
+		JLabel firstPlayerLabel = new JLabel("1st Player");
+		firstPlayerLabel.setFont(new Font("Arial", Font.BOLD, getHeight() / 24));
+		constraints.gridx = 1;
+		subPane.add(firstPlayerLabel, constraints);
 		
 		// Button for starting the game
 		JButton button = new JButton("START");
@@ -175,7 +263,7 @@ public class MainMenu extends JFrame {
 				if (k <= m || k <= n) {
 					setVisible(false);
 					int time = calcTime(minField.getText(), secField.getText());
-					Game gFrame = new Game((JFrame) SwingUtilities.getRoot(button), time, m, n, k, false);
+					Game gFrame = new Game((JFrame) SwingUtilities.getRoot(button), time, m, n, k, compPlayer.isSelected(), (String) firstPlayerBox.getSelectedItem(), false);
 					gFrame.setVisible(true);
 				}
 				else {
@@ -184,10 +272,16 @@ public class MainMenu extends JFrame {
 			}
 		});
 		button.setFont(new Font("Arial", Font.BOLD, getHeight() / 8));
+		/*
 		constraints.gridx = 0;
-		constraints.gridy = 4;
+		constraints.gridy = 5;
 		constraints.gridwidth = 2;
 		contentPane.add(button, constraints);
+		*/
+		constraints.gridx = 2;
+		constraints.gridy = 0;
+		constraints.gridheight = 2;
+		botPane.add(button, constraints);
 	}
 	
 	// Method to calculate total time in seconds from minutes and seconds input

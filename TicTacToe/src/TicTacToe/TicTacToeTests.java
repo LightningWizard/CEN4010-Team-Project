@@ -59,7 +59,7 @@ class TicTacToeTests {
 	@Test
 	void testCheckWinDiagonal1() {
 		MainMenu testMain = new MainMenu();
-		Game testGame = new Game(testMain, 60, 3, 3, 3, true);
+		Game testGame = new Game(testMain, 60, 3, 3, 3, true, "X", true);
 		JButton[][] A = testGame.getBtnArray();
 		int i = 0;
 		int j = 0;
@@ -85,7 +85,7 @@ class TicTacToeTests {
 	@Test
 	void testCheckWinDiagonal2() {
 		MainMenu testMain = new MainMenu();
-		Game testGame = new Game(testMain, 60, 3, 3, 3, true);
+		Game testGame = new Game(testMain, 60, 3, 3, 3, true, "X", true);
 		JButton[][] A = testGame.getBtnArray();
 		int i = 0;
 		int j = 2;
@@ -111,7 +111,7 @@ class TicTacToeTests {
 	@Test
 	void testCheckWinHorizontal() {
 		MainMenu testMain = new MainMenu();
-		Game testGame = new Game(testMain, 60, 3, 3, 3, true);
+		Game testGame = new Game(testMain, 60, 3, 3, 3, true, "X", true);
 		JButton[][] A = testGame.getBtnArray();
 		int i = 0;
 		int j = 0;
@@ -136,7 +136,7 @@ class TicTacToeTests {
 	@Test
 	void testCheckWinVertical() {
 		MainMenu testMain = new MainMenu();
-		Game testGame = new Game(testMain, 60, 3, 3, 3, true);
+		Game testGame = new Game(testMain, 60, 3, 3, 3, true, "X", true);
 		JButton[][] A = testGame.getBtnArray();
 		int i = 0;
 		int j = 0;
@@ -161,7 +161,7 @@ class TicTacToeTests {
 	@Test
 	void testCreateGBL() {
 		MainMenu testMain = new MainMenu();
-		Game testGame = new Game(testMain, 60, 3, 3, 3, true);
+		Game testGame = new Game(testMain, 60, 3, 3, 3, true, "X", true);
 		testGame.setBounds(0, 0, 500, 500);
 		int sideWidth = testGame.createGBL(new GridBagLayout(), 3, 3);
 		testGame.dispose();
@@ -173,7 +173,7 @@ class TicTacToeTests {
 	@Test
 	void testForfeit() {
 		MainMenu testMain = new MainMenu();
-		Game testGame = new Game(testMain, 60, 3, 3, 3, true);
+		Game testGame = new Game(testMain, 60, 3, 3, 3, true, "X", true);
 		JButton button = testGame.getForfeitBtn();
 		ActionListener[] B = button.getActionListeners();
 		B[0].actionPerformed(new ActionEvent(button, ActionEvent.ACTION_PERFORMED, null));
@@ -187,7 +187,7 @@ class TicTacToeTests {
 	@Test
 	void testDraw() {
 		MainMenu testMain = new MainMenu();
-		Game testGame = new Game(testMain, 60, 3, 3, 3, true);
+		Game testGame = new Game(testMain, 60, 3, 3, 3, true, "X", true);
 		JButton[][] A = testGame.getBtnArray();
 		ActionListener[] B;
 		int i = 0;
@@ -229,7 +229,7 @@ class TicTacToeTests {
 	@Test
 	void testIterateTimer() throws InterruptedException {
 		MainMenu testMain = new MainMenu();
-		Game testGame = new Game(testMain, 10, 3, 3, 3, true);
+		Game testGame = new Game(testMain, 10, 3, 3, 3, true, "X", true);
 		testGame.iterateTimer();
 		String s = testGame.getXTimer().getText();
 		testGame.dispose();
@@ -241,7 +241,7 @@ class TicTacToeTests {
 	@Test
 	void testInitiateGrid() {
 		MainMenu testMain = new MainMenu();
-		Game testGame = new Game(testMain, 60, 3, 3, 3, true);
+		Game testGame = new Game(testMain, 60, 3, 3, 3, true, "X", true);
 		JButton[][] A = testGame.getBtnArray();
 		boolean test = true;
 		outerloop:
@@ -265,7 +265,7 @@ class TicTacToeTests {
 	@Test
 	void testHighlight() {
 		MainMenu testMain = new MainMenu();
-		Game testGame = new Game(testMain, 60, 3, 3, 3, true);
+		Game testGame = new Game(testMain, 60, 3, 3, 3, true, "X", true);
 		JButton[][] A = testGame.getBtnArray();
 		testGame.highlight(3, 0, 0, 2, 3);
 		Color back = Color.BLACK;
@@ -288,7 +288,7 @@ class TicTacToeTests {
 	@Test
 	void testEnd() {
 		MainMenu testMain = new MainMenu();
-		Game testGame = new Game(testMain, 60, 3, 3, 3, true);
+		Game testGame = new Game(testMain, 60, 3, 3, 3, true, "X", true);
 		testGame.end("Player ");
 		String s = testGame.getMSG().getText();
 		testGame.dispose();
@@ -299,7 +299,7 @@ class TicTacToeTests {
 	@Test
 	void testMark() {
 		MainMenu testMain = new MainMenu();
-		Game testGame = new Game(testMain, 60, 3, 3, 3, true);
+		Game testGame = new Game(testMain, 60, 3, 3, 3, true, "X", true);
 		JButton[][] A = testGame.getBtnArray();
 		testGame.mark(A[0][0]);
 		String s = A[0][0].getText();
@@ -311,7 +311,7 @@ class TicTacToeTests {
 	@Test
 	void testSwitchTurn() {
 		MainMenu testMain = new MainMenu();
-		Game testGame = new Game(testMain, 60, 3, 3, 3, true);
+		Game testGame = new Game(testMain, 60, 3, 3, 3, true, "X", true);
 		testGame.switchTurn();
 		String s = testGame.getMSG().getText();
 		testGame.dispose();
