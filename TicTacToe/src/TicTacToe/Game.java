@@ -10,6 +10,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
+import java.util.Random;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -97,6 +98,23 @@ public class Game extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				JButton button = (JButton) e.getSource();
 				checkWin(button, m, n, k);
+				if(player == 1) {
+					Random rand = new Random();
+					int x = rand.nextInt(m);
+					int y = rand.nextInt(n);
+					outerloop:
+					for(int i = 0; i < m; i++) {
+						for(int j = 0; j < n; j++) {
+							ActionListener[] B = grid[x % m][y % n].getActionListeners();
+							if(B.length > 0) {
+								B[0].actionPerformed(new ActionEvent(grid[x % m][y % n], ActionEvent.ACTION_PERFORMED, null));
+								break outerloop;
+							}
+							y++;
+						}
+						x++;
+					}
+				}
 			}
 		};
 		initiateGrid(gridPane, m, n);
