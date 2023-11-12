@@ -50,14 +50,8 @@ public class MainMenu extends JFrame {
 		setContentPane(contentPane);
 
 		GridBagLayout gblContentPane = new GridBagLayout();
-		/*
-		int[] height = {getHeight() / 20, getHeight() / 5, getHeight() / 20, getHeight() / 5, getHeight() / 5};
-		int[] width = {getWidth() / 4, getWidth() / 4, getWidth() / 4};
-		*/
-		//New
 		int[] height = {getHeight() / 4, getHeight() / 4, getHeight() / 4};
 		int[] width = {3 * getWidth() / 4};
-		//New
 		gblContentPane.columnWidths = width;
 		gblContentPane.rowHeights = height;
 		contentPane.setLayout(gblContentPane);
@@ -81,19 +75,15 @@ public class MainMenu extends JFrame {
 		minLabel.setFont(new Font("Arial", Font.BOLD, getHeight() / 24));
 		constraints.insets = new Insets(0, 0, 10, 5);
 		constraints.fill = GridBagConstraints.BOTH;
-		//constraints.gridx = 0;
 		constraints.gridx = 1;
 		constraints.gridy = 0;
-		//contentPane.add(minLabel, constraints);
 		topPane.add(minLabel, constraints);
 		
 		JLabel secLabel = new JLabel("SECONDS");
 		secLabel.setHorizontalAlignment(JLabel.CENTER);
 		secLabel.setVerticalAlignment(JLabel.BOTTOM);
 		secLabel.setFont(new Font("Arial", Font.BOLD, getHeight() / 24));
-		//constraints.gridx = 1;
 		constraints.gridx = 2;
-		//contentPane.add(secLabel, constraints);
 		topPane.add(secLabel, constraints);
 		
 		// Document filter for text fields to allow only valid input
@@ -126,10 +116,8 @@ public class MainMenu extends JFrame {
 		minDocument.setDocumentFilter(filter);
 		minField.setHorizontalAlignment(JTextField.CENTER);
 		minField.setFont(new Font("Arial", Font.BOLD, getHeight() / 8));
-		//constraints.gridx = 0;
 		constraints.gridx = 1;
 		constraints.gridy = 1;
-		//contentPane.add(minField, constraints);
 		topPane.add(minField, constraints);
 		
 		secField = new JTextField("00");
@@ -137,9 +125,7 @@ public class MainMenu extends JFrame {
 		secDocument.setDocumentFilter(filter);
 		secField.setHorizontalAlignment(JTextField.CENTER);
 		secField.setFont(new Font("Arial", Font.BOLD, getHeight() / 8));
-		//constraints.gridx = 1;
 		constraints.gridx = 2;
-		//contentPane.add(secField, constraints);
 		topPane.add(secField, constraints);
 		
 		JPanel midPane = new JPanel();
@@ -155,9 +141,7 @@ public class MainMenu extends JFrame {
 		mLabel.setVerticalAlignment(JLabel.BOTTOM);
 		mLabel.setFont(new Font("Arial", Font.BOLD, getHeight() / 24));
 		constraints.gridx = 0;
-		//constraints.gridy = 2;
 		constraints.gridy = 0;
-		//contentPane.add(mLabel, constraints);
 		midPane.add(mLabel, constraints);
 		
 		JLabel nLabel = new JLabel("ROWS");
@@ -165,7 +149,6 @@ public class MainMenu extends JFrame {
 		nLabel.setVerticalAlignment(JLabel.BOTTOM);
 		nLabel.setFont(new Font("Arial", Font.BOLD, getHeight() / 24));
 		constraints.gridx = 1;
-		//contentPane.add(nLabel, constraints);
 		midPane.add(nLabel, constraints);
 		
 		JLabel kLabel = new JLabel("WIN");
@@ -173,7 +156,6 @@ public class MainMenu extends JFrame {
 		kLabel.setVerticalAlignment(JLabel.BOTTOM);
 		kLabel.setFont(new Font("Arial", Font.BOLD, getHeight() / 24));
 		constraints.gridx = 2;
-		//contentPane.add(kLabel, constraints);
 		midPane.add(kLabel, constraints);
 		
 		JTextField mField = new JTextField("03");
@@ -182,9 +164,7 @@ public class MainMenu extends JFrame {
 		mField.setHorizontalAlignment(JTextField.CENTER);
 		mField.setFont(new Font("Arial", Font.BOLD, getHeight() / 8));
 		constraints.gridx = 0;
-		//constraints.gridy = 3;
 		constraints.gridy = 1;
-		//contentPane.add(mField, constraints);
 		midPane.add(mField, constraints);
 		
 		JTextField nField = new JTextField("03");
@@ -193,7 +173,6 @@ public class MainMenu extends JFrame {
 		nField.setHorizontalAlignment(JTextField.CENTER);
 		nField.setFont(new Font("Arial", Font.BOLD, getHeight() / 8));
 		constraints.gridx = 1;
-		//contentPane.add(nField, constraints);
 		midPane.add(nField, constraints);
 		
 		JTextField kField = new JTextField("03");
@@ -202,7 +181,6 @@ public class MainMenu extends JFrame {
 		kField.setHorizontalAlignment(JTextField.CENTER);
 		kField.setFont(new Font("Arial", Font.BOLD, getHeight() / 8));
 		constraints.gridx = 2;
-		//contentPane.add(kField, constraints);
 		midPane.add(kField, constraints);
 		
 		JPanel botPane = new JPanel();
@@ -214,11 +192,6 @@ public class MainMenu extends JFrame {
 		contentPane.add(botPane, gbcPanes);
 		
 		JCheckBox compPlayer = new JCheckBox("2 Players?");
-		/*
-		constraints.gridx = 0;
-		constraints.gridy = 4;
-		contentPane.add(compPlayer, constraints);
-		*/
 		compPlayer.setIcon(new MetalCheckBoxIcon() {
 			protected int getControlSize() {return getWidth() / 24;}
 		});
@@ -241,8 +214,6 @@ public class MainMenu extends JFrame {
 		DefaultListCellRenderer listRenderer = new DefaultListCellRenderer();
 		listRenderer.setHorizontalAlignment(DefaultListCellRenderer.CENTER);
 		firstPlayerBox.setRenderer(listRenderer);
-		//constraints.gridx = 1;
-		//contentPane.add(firstPlayer, constraints);
 		constraints.gridx = 0;
 		constraints.gridy = 0;
 		subPane.add(firstPlayerBox, constraints);
@@ -260,24 +231,30 @@ public class MainMenu extends JFrame {
 				int m = Integer.parseInt(mField.getText());
 				int n = Integer.parseInt(nField.getText());
 				int k = Integer.parseInt(kField.getText());
-				if (k <= m || k <= n) {
+				if (m < 15 && n < 60 && (k <= m || k <= n)) {
 					setVisible(false);
 					int time = calcTime(minField.getText(), secField.getText());
 					Game gFrame = new Game((JFrame) SwingUtilities.getRoot(button), time, m, n, k, compPlayer.isSelected(), (String) firstPlayerBox.getSelectedItem(), false);
 					gFrame.setVisible(true);
 				}
+				else if (m >= 15){
+					JOptionPane optPane = new JOptionPane("Number of columns must be less than 15.", JOptionPane.WARNING_MESSAGE, JOptionPane.NO_OPTION,  null, new Object[0], null);
+					JDialog dialog = optPane.createDialog(button, "Warning");
+					dialog.setVisible(true);
+				}
+				else if (n >= 60) {
+					JOptionPane optPane = new JOptionPane("Number of rows must be less than 60.", JOptionPane.WARNING_MESSAGE, JOptionPane.NO_OPTION,  null, new Object[0], null);
+					JDialog dialog = optPane.createDialog(button, "Warning");
+					dialog.setVisible(true);
+				}
 				else {
-					
+					JOptionPane optPane = new JOptionPane("WIN value must be less than or equal to either the number of columns or rows.", JOptionPane.WARNING_MESSAGE, JOptionPane.NO_OPTION,  null, new Object[0], null);
+					JDialog dialog = optPane.createDialog(button, "Warning");
+					dialog.setVisible(true);
 				}
 			}
 		});
 		button.setFont(new Font("Arial", Font.BOLD, getHeight() / 8));
-		/*
-		constraints.gridx = 0;
-		constraints.gridy = 5;
-		constraints.gridwidth = 2;
-		contentPane.add(button, constraints);
-		*/
 		constraints.gridx = 2;
 		constraints.gridy = 0;
 		constraints.gridheight = 2;

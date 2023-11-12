@@ -111,6 +111,10 @@ public class Game extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				JButton button = (JButton) e.getSource();
 				checkWin(button, m, n, k);
+				//Possible source of bug; if human player wins with only one other empty space left, checkWin swaps players
+				//resulting in the computer going after the game is already over, filling in the last remaining spot. This
+				//leads to this event being called again and checkWin determining a draw. This is the reason why we see two
+				//dialogues pop-up sometimes.
 				if(!twoPlayers && player == 1) {
 					computerMark(m, n);
 				}
