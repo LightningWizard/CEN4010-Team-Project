@@ -157,18 +157,6 @@ class TicTacToeTests {
 		assertEquals(true, s.equals("Player X Wins!"));
 	}
 	
-	// Test case to check if the grid layout creation calculates side width correctly
-	@Test
-	void testCreateGBL() {
-		MainMenu testMain = new MainMenu();
-		Game testGame = new Game(testMain, 60, 3, 3, 3, true, "X", true);
-		testGame.setBounds(0, 0, 500, 500);
-		int sideWidth = testGame.createGBL(new GridBagLayout(), 3, 3);
-		testGame.dispose();
-		testMain.dispose();
-		assertEquals(true, sideWidth == (500 / 4 -15));
-	}
-	
 	// Test case to check if the game declares Player O as winner in case of forfeit
 	@Test
 	void testForfeit() {

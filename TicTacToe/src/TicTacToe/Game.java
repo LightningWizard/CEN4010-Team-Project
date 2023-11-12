@@ -34,7 +34,6 @@ public class Game extends JFrame {
  private int player; // Current player (0 for X, 1 for O)
  private int m;
  private int n;
- private boolean twoPlayers;
  private int min = 0; // Minutes on the timer
  private int sec = 0; // Seconds on the timer
  private int turns = 0; // Number of turns taken in the game
@@ -63,7 +62,6 @@ public class Game extends JFrame {
 		oTime = inTime;
 		this.m = m;
 		this.n = n;
-		this.twoPlayers = twoPlayers;
 		test = inTest;
 		
 		if(firstPlayer.equals("X")) {
@@ -110,12 +108,12 @@ public class Game extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JButton button = (JButton) e.getSource();
-				checkWin(button, m, n, k);
+				int win = checkWin(button, m, n, k);
 				//Possible source of bug; if human player wins with only one other empty space left, checkWin swaps players
 				//resulting in the computer going after the game is already over, filling in the last remaining spot. This
 				//leads to this event being called again and checkWin determining a draw. This is the reason why we see two
 				//dialogues pop-up sometimes.
-				if(!twoPlayers && player == 1) {
+				if(!twoPlayers && player == 1 && win == 0) {
 					computerMark(m, n);
 				}
 			}
@@ -287,7 +285,7 @@ public class Game extends JFrame {
 	}
 	
 	// Method to check if a player has won the game
-	public void checkWin(JButton button, int m, int n, int k) {
+	public int checkWin(JButton button, int m, int n, int k) {
 		mark(button);
 		turns++;
 		
@@ -323,7 +321,7 @@ public class Game extends JFrame {
 			}
 			if(turns == m * n) {
 				end(null);
-				return;
+				return win;
 			}
 		} while (false);
 		switchTurn();
@@ -331,6 +329,7 @@ public class Game extends JFrame {
 			highlight(win, x, y, val1, k);
 			end("Player ");
 		}
+		return win;
 	}
 	
 	public void computerMark(int m, int n) {
@@ -349,27 +348,6 @@ public class Game extends JFrame {
 			}
 			x++;
 		}
-	}
-	
-	// Method to create GridBagLayout for the content pane and return side width
-	public int createGBL(GridBagLayout gblContentPane, int m, int n) {
-		int sideWidth = getWidth() / 4 - 15;
-		int min = Math.min(m , n);
-		int gridWidth = getWidth() / (2 * min);
-		
-		int[] widths = new int[2 + m];
-		widths[0] = sideWidth;
-		widths[widths.length - 1] = sideWidth;
-		for(int i = 1; i <= m; i++) {
-			widths[i] = gridWidth;
-		}
-		gblContentPane.columnWidths = widths;
-		
-		int[] height = new int[4];
-		Arrays.fill(height, gridWidth);
-		gblContentPane.rowHeights = height;
-		
-		return sideWidth;
 	}
 	
 	// Method to end the game and display the result
