@@ -14,13 +14,13 @@ This is a simple implementation of the Tic Tac Toe game in Java with a graphical
 2. Import the project into Eclipse.
 3. Select "Run As" > "Java Application."
 
-##Strengths
+## Strengths
 The game provides a simple and intuitive graphical interface for playing Tic Tac Toe.
 Supports multiple game modes, including human vs. human and human vs. computer.
 
-##Weaknesses
+## Weaknesses
 The advanced computer player strategy might not be optimal and could be improved.
 Limited error handling for invalid moves or game states.
 
-##Missing Features
+## Missing Features
 The game could benefit from additional features such as a scoreboard, game statistics, or difficulty levels for computer players.
