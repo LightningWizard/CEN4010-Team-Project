@@ -30,6 +30,9 @@ public class Board {
 			public void actionPerformed(ActionEvent e) {
 				JButton button = (JButton) e.getSource();
 				int win = checkWin(button, m, n, k);
+				if(game.getGameType() == 2 && game.getPlayer() == 0) {
+					advMark((int) button.getClientProperty("x"), (int) button.getClientProperty("y"));
+				}
 				game.switchTurn();
 			}
 		};
@@ -139,7 +142,6 @@ public class Board {
 				win = 1;
 				break;
 			}
-			//Perhaps you can use an else if statement to check for a near win. Return the node needed to make a win.
 			val1 = check(grid, x, y, -1, 0, player);
 			val2 = check(grid, x, y, 1, 0, player);
 			if(k <= val1 + val2 + 1) {
@@ -229,5 +231,180 @@ public class Board {
 		}
 		button.setFont(new Font("Arial", Font.BOLD, button.getHeight() / 2));
 		button.removeActionListener(gridListener);
+	}
+	
+	//The modifications to values that must be made when a mark is made by the human player.
+	public void advMark(int x, int y) {
+		nums[(int) getButton(x, y).getClientProperty("val")]--;
+		getButton(x, y).putClientProperty("val", 0);
+		nums[(int) getButton(x, y).getClientProperty("val")]++;
+		int stopXOne = x + k + 1;
+		int stopXTwo = x - k - 1;
+		for(int i = 1; i <= k; i++) {
+			if(x + i == m || (int) getButton(x + i, y).getClientProperty("val") == 0) {
+				stopXOne = x + i;
+				break;
+			}
+		}
+		for(int i = 1; i <= k; i++) {
+			if(x - i == -1 || (int) getButton(x - i, y).getClientProperty("val") == 0) {
+				stopXTwo = x - i;
+				break;
+			}
+		}
+		if((stopXOne - stopXTwo) > k) {
+			if(stopXOne - x <= k) {
+				int i = x + 1;
+				while(i < stopXOne) {
+					if((int) getButton(i, y).getClientProperty("val") != -1) {
+						nums[(int) getButton(i, y).getClientProperty("val")]--;
+						getButton(i, y).putClientProperty("val", (int) getButton(i, y).getClientProperty("val") - 1);
+						nums[(int) getButton(i, y).getClientProperty("val")]++;
+					}
+					i++;
+				}
+			}
+			if(x - stopXTwo <= k) {
+				int i = x - 1;
+				while(i > stopXTwo) {
+					if((int) getButton(i, y).getClientProperty("val") != -1) {
+						nums[(int) getButton(i, y).getClientProperty("val")]--;
+						getButton(i, y).putClientProperty("val", (int) getButton(i, y).getClientProperty("val") - 1);
+						nums[(int) getButton(i, y).getClientProperty("val")]++;
+					}
+					i--;
+				}
+			}
+		}
+		int stopYOne = y + k + 1;
+		int stopYTwo = y - k - 1;
+		for(int i = 1; i <= k; i++) {
+			if(y + i == n || (int) getButton(x, y + i).getClientProperty("val") == 0) {
+				stopYOne = y + i;
+				break;
+			}
+		}
+		for(int i = 1; i <= k; i++) {
+			if(y - i == -1 || (int) getButton(x, y - i).getClientProperty("val") == 0) {
+				stopYTwo = y - i;
+				break;
+			}
+		}
+		if((stopYOne - stopYTwo) > k) {
+			if(stopYOne - y <= k) {
+				int i = y + 1;
+				while(i < stopYOne) {
+					if((int) getButton(x, i).getClientProperty("val") != -1) {
+						nums[(int) getButton(x, i).getClientProperty("val")]--;
+						getButton(x, i).putClientProperty("val", (int) getButton(x, i).getClientProperty("val") - 1);
+						nums[(int) getButton(x, i).getClientProperty("val")]++;
+					}
+			  		i++;
+			  	}
+			}
+			if(y - stopYTwo <= k) {
+				int i = y - 1;
+				while(i > stopYTwo) {
+					if((int) getButton(x, i).getClientProperty("val") != -1) {
+						nums[(int) getButton(x, i).getClientProperty("val")]--;
+						getButton(x, i).putClientProperty("val", (int) getButton(x, i).getClientProperty("val") - 1);
+						nums[(int) getButton(x, i).getClientProperty("val")]++;
+					}
+			  		i--;
+			 	}
+			}
+		}
+		stopXOne = x + k + 1;
+		stopXTwo = x - k - 1;
+		stopYOne = y + k + 1;
+		stopYTwo = y - k - 1;
+		for(int i = 1; i <= k; i++) {
+			if(x + i == m || y + i == n || (int) getButton(x + i, y + i).getClientProperty("val") == 0) {
+				stopXOne = x + i;
+				stopYOne = y + i;
+				break;
+			}
+		}
+		for(int i = 1; i <= k; i++) {
+			if(x - i == -1 || y - i == -1 || (int) getButton(x - i, y - i).getClientProperty("val") == 0) {
+				stopXTwo = x - i;
+				stopYTwo = y - i;
+				break;
+			}
+		}
+		if((stopXOne - stopXTwo) > k && (stopYOne - stopYTwo) > k) {
+			if(stopXOne - x <= k && stopYOne - y <= k) {
+				int i = x + 1;
+			  	int j = y + 1;
+			  	while(i < stopXOne && j < stopYOne) {
+			  		if((int) getButton(i, j).getClientProperty("val") != -1) {
+			  			nums[(int) getButton(i, j).getClientProperty("val")]--;
+			  			getButton(i, j).putClientProperty("val", (int) getButton(i, j).getClientProperty("val") - 1);
+			  			nums[(int) getButton(i, j).getClientProperty("val")]++;
+			  		}
+			  		i++;
+			  		j++;
+			  	}
+			}
+			if(x - stopXTwo <= k && y - stopYTwo <= k) {
+			  	int i = x - 1;
+			  	int j = y - 1;
+			  	while(i > stopXTwo && j > stopYTwo) {
+			  		if((int) getButton(i, j).getClientProperty("val") != -1) {
+			  			nums[(int) getButton(i, j).getClientProperty("val")]--;
+			  			getButton(i, j).putClientProperty("val", (int) getButton(i, j).getClientProperty("val") - 1);
+			  			nums[(int) getButton(i, j).getClientProperty("val")]++;
+			  		}
+			  		i--;
+			  		j--;
+			  	}
+			}
+		}
+		stopXOne = x + k + 1;
+		stopXTwo = x - k - 1;
+		stopYOne = y + k + 1;
+		stopYTwo = y - k - 1;
+		for(int i = 1; i <= k; i++) {
+			if(x + i == m || y - i == -1 || (int) getButton(x + i, y - i).getClientProperty("val") == 0) {
+				stopXOne = x + i;
+				stopYOne = y - i;
+				break;
+			}
+		}
+		for(int i = 1; i <= k; i++) {
+			if(x - i == -1 || y + i == n || (int) getButton(x - i, y + i).getClientProperty("val") == 0) {
+				stopXTwo = x - i;
+				stopYTwo = y + i;
+				break;
+			}
+		}
+		if((stopXOne - stopXTwo) > k && (stopYTwo - stopYOne) > k) {
+			if(stopXOne - x <= k && stopYTwo - y <= k) {
+				int i = x + 1;
+			  	int j = y - 1;
+			  	while(i < stopXOne && j < stopYTwo) {
+			  		if((int) getButton(i, j).getClientProperty("val") != -1) {
+			  			nums[(int) getButton(i, j).getClientProperty("val")]--;
+			  			getButton(i, j).putClientProperty("val", (int) getButton(i, j).getClientProperty("val") - 1);
+			  			nums[(int) getButton(i, j).getClientProperty("val")]++;
+			  		}
+			  		i++;
+			  		j--;
+			  	}
+			}
+			if(x - stopXTwo <= k && y - stopYOne <= k) {
+			  	int i = x - 1;
+			  	int j = y + 1;
+			  	while(i > stopXTwo && j > stopYOne) {
+			  		if((int) getButton(i, j).getClientProperty("val") != -1) {
+			  			nums[(int) getButton(i, j).getClientProperty("val")]--;
+			  			getButton(i, j).putClientProperty("val", (int) getButton(i, j).getClientProperty("val") - 1);
+			  			nums[(int) getButton(i, j).getClientProperty("val")]++;
+			  		}
+			  		i--;
+			  		j++;
+			  	}
+			}
+		}
 	}
 }

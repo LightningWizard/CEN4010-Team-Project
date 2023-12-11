@@ -42,8 +42,7 @@ public class Game extends JFrame {
 
  // UI components
  private JLabel msg; // Message label indicating the current player's turn
- private BackgroundPanel contentPane;
- //private JPanel contentPane; // Main content panel
+ private BackgroundPanel contentPane; // Main content panel
  private Board grid; // 2D array of buttons representing the Tic-Tac-Toe grid
 
  private JButton forfeitBtn; // Button for forfeiting the game
@@ -58,6 +57,7 @@ public class Game extends JFrame {
  private JDialog dialog; // Dialog for displaying messages
  
  private Player[] players = new Player[2];
+ private int gameType;
 
  // Constructor for the Game class
 	public Game(JFrame inFrame, int inTime, int m, int n, int k, String mode, String firstPlayer, String theme, boolean inTest) {
@@ -71,12 +71,15 @@ public class Game extends JFrame {
 		players[0] = new HumanPlayer(this);
 		if(mode.equals("Player VS Player")) {
 			players[1] = new HumanPlayer(this);
+			gameType = 0;
 		}
 		else if(mode.equals("Player VS AI (Basic)")) {
 			players[1] = new BasicComputerPlayer(this);
+			gameType = 1;
 		}
 		else {
 			players[1] = new AdvancedComputerPlayer(this);
+			gameType = 2;
 		}
 		if(firstPlayer.equals("Go First")) {
 			player = 0;
@@ -96,7 +99,6 @@ public class Game extends JFrame {
 		setLocationRelativeTo(null);
 		setTitle("TicTacToe - Game");
 		contentPane = new BackgroundPanel(image);
-		//contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		
 		// Set up the GridBagLayout for the main content pane
@@ -107,11 +109,6 @@ public class Game extends JFrame {
 		gblContentPane.columnWidths = new int[] {getWidth() / 4 - 15, getWidth() / 2, getWidth() / 4 - 15};
 		gblContentPane.rowHeights = new int[] {4 * getHeight() / 6, getHeight() / 6};
 		contentPane.setLayout(gblContentPane);
-		
-		/*
-		Graphics g = new Graphics();
-		getGraphics().drawImage(Toolkit.getDefaultToolkit().createImage("Summer.avif"), 0, 0, null);
-		*/
 		
 		JPanel gridPane = new JPanel();
 		gridPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -227,8 +224,14 @@ public class Game extends JFrame {
 	public Board getGrid() {
 		return grid;
 	}
+	public int getGameType() {
+		return gameType;
+	}
 	public int getPlayer() {
 		return player;
+	}
+	public Player[] getPlayers() {
+		return players;
 	}
 	public int getTurns() {
 		return turns;

@@ -16,6 +16,5 @@ public class BackgroundPanel extends JPanel {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		g.drawImage(img, 0, 0, this);
-		//paint - components wouldn't appear until you moused over them; likely an update / repaint / revalidate thing
 	}
 }
