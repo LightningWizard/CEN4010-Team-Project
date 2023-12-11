@@ -4,9 +4,11 @@ package TicTacToe;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
@@ -40,9 +42,9 @@ public class Game extends JFrame {
 
  // UI components
  private JLabel msg; // Message label indicating the current player's turn
- private JPanel contentPane; // Main content panel
- private JButton[][] grid; // 2D array of buttons representing the Tic-Tac-Toe grid
- private ActionListener gridListener; // Action listener for grid buttons
+ private BackgroundPanel contentPane;
+ //private JPanel contentPane; // Main content panel
+ private Board grid; // 2D array of buttons representing the Tic-Tac-Toe grid
 
  private JButton forfeitBtn; // Button for forfeiting the game
  private JLabel xLabel; // Label for player X
@@ -54,9 +56,11 @@ public class Game extends JFrame {
 
  private JOptionPane optPane; // Option pane for displaying messages
  private JDialog dialog; // Dialog for displaying messages
+ 
+ private Player[] players = new Player[2];
 
  // Constructor for the Game class
-	public Game(JFrame inFrame, int inTime, int m, int n, int k, boolean twoPlayers, String firstPlayer, boolean inTest) {
+	public Game(JFrame inFrame, int inTime, int m, int n, int k, String mode, String firstPlayer, String theme, boolean inTest) {
 		frame = inFrame;
 		xTime = inTime;
 		oTime = inTime;
@@ -64,11 +68,26 @@ public class Game extends JFrame {
 		this.n = n;
 		test = inTest;
 		
-		if(firstPlayer.equals("X")) {
+		players[0] = new HumanPlayer(this);
+		if(mode.equals("Player VS Player")) {
+			players[1] = new HumanPlayer(this);
+		}
+		else if(mode.equals("Player VS AI (Basic)")) {
+			players[1] = new BasicComputerPlayer(this);
+		}
+		else {
+			players[1] = new AdvancedComputerPlayer(this);
+		}
+		if(firstPlayer.equals("Go First")) {
 			player = 0;
 		}
 		else {
 			player = 1;
+		}
+		
+		String image = "Winter.jpg";
+		if(theme.equals("Summer")) {
+			image = "Summer.jpg";
 		}
 		
 		// Set up the main frame
@@ -76,7 +95,8 @@ public class Game extends JFrame {
 		setBounds(0, 0, 1000, 750);
 		setLocationRelativeTo(null);
 		setTitle("TicTacToe - Game");
-		contentPane = new JPanel();
+		contentPane = new BackgroundPanel(image);
+		//contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		
 		// Set up the GridBagLayout for the main content pane
@@ -87,6 +107,11 @@ public class Game extends JFrame {
 		gblContentPane.columnWidths = new int[] {getWidth() / 4 - 15, getWidth() / 2, getWidth() / 4 - 15};
 		gblContentPane.rowHeights = new int[] {4 * getHeight() / 6, getHeight() / 6};
 		contentPane.setLayout(gblContentPane);
+		
+		/*
+		Graphics g = new Graphics();
+		getGraphics().drawImage(Toolkit.getDefaultToolkit().createImage("Summer.avif"), 0, 0, null);
+		*/
 		
 		JPanel gridPane = new JPanel();
 		gridPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -102,23 +127,8 @@ public class Game extends JFrame {
 		gridPane.setMaximumSize(new Dimension(getWidth() / 2, getWidth() /2));
 		gridPane.setLayout(gblGridPane);
 		
-		// Initialize the grid of buttons and add action listener
-		grid = new JButton[m][n];
-		gridListener = new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				JButton button = (JButton) e.getSource();
-				int win = checkWin(button, m, n, k);
-				//Possible source of bug; if human player wins with only one other empty space left, checkWin swaps players
-				//resulting in the computer going after the game is already over, filling in the last remaining spot. This
-				//leads to this event being called again and checkWin determining a draw. This is the reason why we see two
-				//dialogues pop-up sometimes.
-				if(!twoPlayers && player == 1 && win == 0) {
-					computerMark(m, n);
-				}
-			}
-		};
-		initiateGrid(gridPane, m, n);
+		grid = new Board(this, m, n, k);
+		grid.initiateGrid(gridPane, m, n, getWidth());
 		
 		GridBagConstraints gbcPanes = new GridBagConstraints();
 		gbcPanes.gridx = 1;
@@ -207,16 +217,16 @@ public class Game extends JFrame {
 		gbcPanel.gridy = 0;
 		gbcPanel.gridheight = 4;
 		contentPane.add(timePanel, gbcPanel);
-		
-		if(!twoPlayers && player == 1) {
-			initialMark(max);
-			switchTurn();
-			turns++;
-		}
+
+		System.out.println(player);
+		players[player].takeTurn();
 	}
 	
 	// Getters and setters for various properties
 	
+	public Board getGrid() {
+		return grid;
+	}
 	public int getPlayer() {
 		return player;
 	}
@@ -228,9 +238,6 @@ public class Game extends JFrame {
 	}
 	public JLabel getMSG() {
 		return msg;
-	}
-	public JButton[][] getBtnArray() {
-		return grid;
 	}
 	public JLabel getXLabel() {
 		return xLabel;
@@ -258,96 +265,6 @@ public class Game extends JFrame {
 	}
 	public void setPlayer(int p) {
 		player = p;
-	}
-	
-	// Method to recursively check for a winning condition
-	public int check(JButton[][] A, int x, int y, int i, int j, int p) {
-		if(0 <= x + i && x + i <= A.length - 1) {
-			if (0 <= y + j && y + j <= A[x + i].length - 1) {
-				String s;
-				if(p == 0) {
-					s = "X";
-				}
-				else {
-					s = "O";
-				}
-				if(s.equals(A[x + i][y + j].getText())) {
-					if (i > 0) { i++; }
-					else if (i < 0) { i--; }
-					if (j > 0) { j++; }
-					else if (j < 0) { j--; }
-
-					return 1 + check(A, x, y, i, j, p);
-				}
-			}
-		}
-		return 0;
-	}
-	
-	// Method to check if a player has won the game
-	public int checkWin(JButton button, int m, int n, int k) {
-		mark(button);
-		turns++;
-		
-		int x = (int) button.getClientProperty("x");
-		int y = (int) button.getClientProperty("y");
-		
-		int win = 0;
-		int val1 = check(grid, x, y, -1, -1, player);
-		int val2 = check(grid, x, y, 1, 1, player);
-		
-		do {
-			if(k <= val1 + val2 + 1) {
-				win = 1;
-				break;
-			}
-			val1 = check(grid, x, y, -1, 0, player);
-			val2 = check(grid, x, y, 1, 0, player);
-			if(k <= val1 + val2 + 1) {
-				win = 2;
-				break;
-			}
-			val1 = check(grid, x, y, 0, 1, player);
-			val2 = check(grid, x, y, 0, -1, player);
-			if(k <= val1 + val2 + 1) {
-				win = 3;
-				break;
-			}
-			val1 = check(grid, x, y, -1, 1, player);
-			val2 = check(grid, x, y, 1, -1, player);
-			if(k <= val1 + val2 + 1) {
-				win = 4;
-				break;
-			}
-			if(turns == m * n) {
-				end(null);
-				return win;
-			}
-		} while (false);
-		switchTurn();
-		if(0 < win) {
-			highlight(win, x, y, val1, k);
-			end("Player ");
-		}
-		return win;
-	}
-	
-	public void computerMark(int m, int n) {
-		Random rand = new Random();
-		int x = rand.nextInt(m);
-		int y = rand.nextInt(n);
-		outerloop:
-		for(int i = 0; i < m; i++) {
-			for(int j = 0; j < n; j++) {
-				ActionListener[] B = grid[x % m][y % n].getActionListeners();
-				if(B.length > 0) {
-					B[0].actionPerformed(new ActionEvent(grid[x % m][y % n], ActionEvent.ACTION_PERFORMED, null));
-					break outerloop;
-				}
-				y++;
-			}
-			x++;
-		}
 	}
 	
 	// Method to end the game and display the result
@@ -394,69 +311,6 @@ public class Game extends JFrame {
 		}
 	}
 	
-	// Method to highlight the winning combination on the grid
-	public void highlight(int win, int x, int y, int val1, int k) {
-		// Highlight the winning combination on the grid
-		switch(win) {
-		case 1:
-			for(int i = 0; i < k; i++) {
-				grid[x - val1 + i][y - val1 + i].setBackground(Color.BLACK);
-				grid[x - val1 + i][y - val1 + i].setForeground(Color.WHITE);
-			}
-			break;
-		case 2:
-			for(int i = 0; i < k; i++) {
-				grid[x - val1 + i][y].setBackground(Color.BLACK);
-				grid[x - val1 + i][y].setForeground(Color.WHITE);
-			}
-			break;
-		case 3:
-			for(int i = 0; i < k; i++) {
-				grid[x][y + val1 - i].setBackground(Color.BLACK);
-				grid[x][y + val1 - i].setForeground(Color.WHITE);
-			}
-			break;
-		case 4:
-			for(int i = 0; i < k; i++) {
-				grid[x - val1 + i][y + val1 - i].setBackground(Color.BLACK);
-				grid[x - val1 + i][y + val1 - i].setForeground(Color.WHITE);
-			}
-			break;
-		}
-	}
-	
-	public void initialMark(int max) {
-		Random rand = new Random();
-		int x = rand.nextInt(m);
-		int y = rand.nextInt(n);
-		
-		JButton button = grid[x][y];
-		button.setText("O");
-		button.setForeground(Color.BLUE);
-		button.setFont(new Font("Arial", Font.BOLD, getWidth() / (4 * max)));
-		button.removeActionListener(gridListener);
-	}
-	
-	// Method to initialize the grid of buttons
-	public void initiateGrid(JPanel gridPane, int m, int n) {
-		GridBagConstraints gbcGridButton = new GridBagConstraints();
-
-		int max = Math.max(m, n);
-		for(int i = 0; i < m; i++) {
-			for(int j = 0; j < n; j++) {
-				grid[i][j] = new JButton();
-				grid[i][j].addActionListener(gridListener);
-				grid[i][j].putClientProperty("x", i);
-				grid[i][j].putClientProperty("y", j);
-				grid[i][j].setMaximumSize(new Dimension(getWidth() / (2 * max), getWidth() / (2 * max)));
-				grid[i][j].setPreferredSize(new Dimension(getWidth() / (2 * max), getWidth() / (2 * max)));
-				gbcGridButton.gridx = i;
-				gbcGridButton.gridy = j;
-				gridPane.add(grid[i][j], gbcGridButton);
-			}
-		}
-	}
-	
 	// Method to iterate the game timer
 	public void iterateTimer() {
 		if(xTime > 0 && player == 0) {
@@ -476,19 +330,8 @@ public class Game extends JFrame {
 		}
 	}
 	
-	// Method to mark the selected button with the player's symbol
-	public void mark(JButton button) {
-		// Mark the selected button with the player's symbol (X or O)
-		if (player == 0) {
-			button.setText("X");
-			button.setForeground(Color.RED);
-		}
-		else {
-			button.setText("O");
-			button.setForeground(Color.BLUE);
-		}
-		button.setFont(new Font("Arial", Font.BOLD, button.getHeight() / 2));
-		button.removeActionListener(gridListener);
+	public void iterateTurns() {
+		turns++;
 	}
 	
 	// Method to switch the turn between players
@@ -502,5 +345,6 @@ public class Game extends JFrame {
 		}
 		msg.setText("Player " + s + "'s Turn");
 		player = player * (-1) + 1;
+		players[player].takeTurn();
 	}
 }

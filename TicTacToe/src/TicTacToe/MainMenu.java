@@ -32,6 +32,7 @@ public class MainMenu extends JFrame {
 				try {
 					MainMenu frame = new MainMenu(); // Create MainMenu frame
 					frame.setVisible(true); // Set frame visibility to true
+					frame.repaint();
 				} catch (Exception e) {
 					e.printStackTrace(); // Print stack trace if an exception occurs
 				}
@@ -185,43 +186,37 @@ public class MainMenu extends JFrame {
 		
 		JPanel botPane = new JPanel();
 		GridBagLayout gblBotPane = new GridBagLayout();
-		gblBotPane.columnWidths = new int[] {getWidth() / 8, getWidth() / 4, getWidth() / 4, getWidth() / 8};
+		gblBotPane.columnWidths = new int[] {getWidth() / 3, getWidth() / 6, getWidth() / 6};
 		gblBotPane.rowHeights = new int[] {getHeight() / 10, getHeight() / 10};
 		botPane.setLayout(gblBotPane);
 		gbcPanes.gridy = 2;
 		contentPane.add(botPane, gbcPanes);
 		
-		JCheckBox compPlayer = new JCheckBox("2 Players?");
-		compPlayer.setIcon(new MetalCheckBoxIcon() {
-			protected int getControlSize() {return getWidth() / 24;}
-		});
-		compPlayer.setFont(new Font("Arial", Font.BOLD, getHeight() / 24));
-		constraints.gridx = 1;
-		constraints.gridy = 0;
-		botPane.add(compPlayer, constraints);
-		
-		JPanel subPane = new JPanel();
-		GridBagLayout gblSubPane = new GridBagLayout();
-		gblSubPane.columnWidths = new int[] {getWidth() / 24, 5 * getWidth() / 24};
-		gblSubPane.rowHeights = new int[] {getHeight() / 10};
-		subPane.setLayout(gblSubPane);
-		constraints.gridy = 1;
-		botPane.add(subPane, constraints);
-		
-		String[] players = {"X", "O"};
-		JComboBox<String> firstPlayerBox = new JComboBox<String>(players);
-		firstPlayerBox.setFont(new Font("Arial", Font.BOLD, getHeight() / 24));
+		String[] modes = {"Player VS Player", "Player VS AI (Basic)", "Player VS AI (Advanced)"};
+		JComboBox<String> modeBox = new JComboBox<String>(modes);
+		modeBox.setFont(new Font("Arial", Font.PLAIN, getHeight() / 36));
 		DefaultListCellRenderer listRenderer = new DefaultListCellRenderer();
 		listRenderer.setHorizontalAlignment(DefaultListCellRenderer.CENTER);
-		firstPlayerBox.setRenderer(listRenderer);
+		modeBox.setRenderer(listRenderer);
 		constraints.gridx = 0;
 		constraints.gridy = 0;
-		subPane.add(firstPlayerBox, constraints);
+		botPane.add(modeBox, constraints);
 		
-		JLabel firstPlayerLabel = new JLabel("1st Player");
-		firstPlayerLabel.setFont(new Font("Arial", Font.BOLD, getHeight() / 24));
+		String[] players = {"Go First", "Go Second"};
+		JComboBox<String> firstPlayerBox = new JComboBox<String>(players);
+		firstPlayerBox.setFont(new Font("Arial", Font.PLAIN, getHeight() / 36));
+		listRenderer.setHorizontalAlignment(DefaultListCellRenderer.CENTER);
+		firstPlayerBox.setRenderer(listRenderer);
 		constraints.gridx = 1;
-		subPane.add(firstPlayerLabel, constraints);
+		botPane.add(firstPlayerBox, constraints);
+		
+		String[] themes = {"Summer", "Winter"};
+		JComboBox<String> themesBox = new JComboBox<String>(themes);
+		themesBox.setFont(new Font("Arial", Font.PLAIN, getHeight() / 36));
+		listRenderer.setHorizontalAlignment(DefaultListCellRenderer.CENTER);
+		themesBox.setRenderer(listRenderer);
+		constraints.gridx = 2;
+		botPane.add(themesBox, constraints);
 		
 		// Button for starting the game
 		JButton button = new JButton("START");
@@ -234,7 +229,8 @@ public class MainMenu extends JFrame {
 				if (m < 15 && n < 60 && (k <= m || k <= n)) {
 					setVisible(false);
 					int time = calcTime(minField.getText(), secField.getText());
-					Game gFrame = new Game((JFrame) SwingUtilities.getRoot(button), time, m, n, k, compPlayer.isSelected(), (String) firstPlayerBox.getSelectedItem(), false);
+					//true
+					Game gFrame = new Game((JFrame) SwingUtilities.getRoot(button), time, m, n, k, (String) modeBox.getSelectedItem(), (String) firstPlayerBox.getSelectedItem(), (String) themesBox.getSelectedItem(), false);
 					gFrame.setVisible(true);
 				}
 				else if (m >= 15){
@@ -255,9 +251,9 @@ public class MainMenu extends JFrame {
 			}
 		});
 		button.setFont(new Font("Arial", Font.BOLD, getHeight() / 8));
-		constraints.gridx = 2;
-		constraints.gridy = 0;
-		constraints.gridheight = 2;
+		constraints.gridx = 0;
+		constraints.gridy = 1;
+		constraints.gridwidth = 3;
 		botPane.add(button, constraints);
 	}
 	
@@ -284,3 +280,10 @@ public class MainMenu extends JFrame {
 		return secDocument;
 	}
 }
+
+/*Advanced Computer Player Behavior
+ * Instead of plotting marks randomly, it will try to actually build a row of marks. Additionally, it will intercept
+ * the human player if they are about to win.
+ * When plotting the buttons in the grid, assign values to them based on m, n, k, i, and j. If m >= k, +1. If n >= k, +1.
+ * k - i
+ */
